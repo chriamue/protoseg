@@ -17,3 +17,6 @@ class AbstractBackend():
 
     def predict(self):
         pass
+
+    def get_summary_writer(self, logdir='results/'):
+        pass

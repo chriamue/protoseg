@@ -6,4 +6,5 @@ run1_gluoncv:
   height: 480
   learn_rate: 0.001
   pretrained: true
+  summarysteps: 1
   width: 480

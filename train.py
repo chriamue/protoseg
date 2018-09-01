@@ -29,12 +29,14 @@ if __name__ == "__main__":
         configs.save(resultpath + '/config.yml')
         # get config for current run
         config = configs.get()
+        # summary
+        summarywriter = backends.backend().get_summary_writer(logdir=resultpath)
         # Load Model
         modelfile = os.path.join('results/', run, 'model.checkpoint')
         model = Model(config, modelfile)
 
         dataloader = DataLoader(datapath, config=config, mode='train')
         backends.set_backend(config['backend'])
-        trainer = Trainer(config, model, dataloader)
+        trainer = Trainer(config, model, dataloader, summarywriter=summarywriter)
         trainer.train()
     sys.exit(0)

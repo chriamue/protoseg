@@ -6,7 +6,9 @@ from . import backends
 class Trainer():
 
     epoch = 0
+    global_step = 0
     loss = 0.0
+
     
     def before_epoch(self):
         print('starting epoch:', self.epoch)
@@ -22,10 +24,11 @@ class Trainer():
     before_epoch_callback = before_epoch
     after_epoch_callback = after_epoch
 
-    def __init__(self, config = None, model = None, dataloader = None):
+    def __init__(self, config = None, model = None, dataloader = None, summarywriter=None):
         self.config = config
         self.model = model
         self.dataloader = dataloader
+        self.summarywriter = summarywriter
         assert(config)
         assert(model)
         assert(dataloader)
@@ -37,6 +40,7 @@ class Trainer():
         print('Batch size:', self.config['batch_size'])
 
     def train(self):
+        self.global_step = 0
         self.print_config()
         for epoch in range(self.config['epochs']):
             self.epoch = epoch

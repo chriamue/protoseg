@@ -13,6 +13,7 @@ from gluoncv.utils.parallel import DataParallelModel, DataParallelCriterion
 from protoseg.backends import AbstractBackend
 from protoseg.trainer import Trainer
 
+from mxboard import SummaryWriter
 
 
 class gluoncv_backend(AbstractBackend):
@@ -57,9 +58,14 @@ class gluoncv_backend(AbstractBackend):
 
     def train_epoch(self, trainer):
         batch_size = trainer.config['batch_size']
+        summarysteps = trainer.config['summarysteps']
+
         dataloader = DataLoader(
             dataset=trainer.dataloader, batch_size=batch_size, last_batch='rollover', num_workers=batch_size)
+        
+
         for i, (X_batch, y_batch) in enumerate(dataloader):
+            trainer.global_step += 1
             trainer.lr_scheduler.update(i, trainer.epoch)
             with autograd.record(True):
                 outputs = trainer.model.model(X_batch)
@@ -69,4 +75,19 @@ class gluoncv_backend(AbstractBackend):
             trainer.optimizer.step(batch_size)
             for loss in losses:
                 trainer.loss += loss.asnumpy()[0]
+            if i % summarysteps == 0:
+                print(trainer.global_step, i, 'loss:', trainer.loss / (i+1))
+                if trainer.summarywriter:
+                    trainer.summarywriter.add_scalar(tag='loss', value=trainer.loss / (i+1), global_step=trainer.global_step)
+                    trainer.summarywriter.add_image("image", (X_batch[0]/255.0), global_step=trainer.global_step)
+                    trainer.summarywriter.add_image("mask", (y_batch[0]/255.0), global_step=trainer.global_step)
+                    #with autograd.predict_mode():
+                    #    outputs2 = trainer.model.model.module(X_batch.as_in_context(self.ctx))
+                    output ,_= outputs[0]
+                    #    print(output, outputs[0])
+                    predict = mxnet.nd.squeeze(mxnet.nd.argmax(output, 1)).asnumpy().clip(0,1)
+                    trainer.summarywriter.add_image("predicted", (predict), global_step=trainer.global_step)
         print('train on gluoncv backend')
+
+    def get_summary_writer(self, logdir='results/'):
+        return SummaryWriter(logdir=logdir)
