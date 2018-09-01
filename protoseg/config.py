@@ -38,3 +38,8 @@ class Config():
         """
         with open(path, 'w') as outfile:
             yaml.dump({self.keys[self.current]: self[self.current]}, outfile, default_flow_style=False)
+
+    def get(self, key=None):
+        if key is None:
+            key = self.keys[self.current]
+        return self[self.keys.index(key)]
