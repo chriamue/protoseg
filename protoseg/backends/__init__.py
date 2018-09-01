@@ -43,7 +43,7 @@ for x in glob(join(pwd, '*.py')):
         spec.loader.exec_module(module)
         module_class = getattr(module, basename(x)[:-3])
         register_backend(basename(x)[:-3], module_class)
-set_backend('gluoncv')
+set_backend('gluoncv_backend')
 
 __all__ = [
     'AbstractBackend',

@@ -43,3 +43,6 @@ class Config():
         if key is None:
             key = self.keys[self.current]
         return self[self.keys.index(key)]
+
+    def current_run(self):
+        return self.keys[self.current]

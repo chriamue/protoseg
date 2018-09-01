@@ -4,6 +4,7 @@ import numpy as np
 import cv2
 from . import backends
 
+
 class DataLoader():
 
     images = []
@@ -16,8 +17,10 @@ class DataLoader():
         _image_dir = os.path.join(root, mode)
         _masks_dir = os.path.join(root, mode+"_masks")
 
-        self.images = (os.path.join(_image_dir, f) for f in os.listdir(_image_dir))
-        self.masks = (os.path.join(_masks_dir, f) for f in os.listdir(_masks_dir))
+        self.images = (os.path.join(_image_dir, f)
+                       for f in os.listdir(_image_dir))
+        self.masks = (os.path.join(_masks_dir, f)
+                      for f in os.listdir(_masks_dir))
 
         self.images = sorted(self.images)
         self.masks = sorted(self.masks)

@@ -1,6 +1,7 @@
 run1_gluoncv:
-  backend: gluoncv
+  backend: gluoncv_backend
   backbone: resnet50
   epochs: 10
-  batch_size: 3
+  batch_size: 1
   learn_rate: 0.001
+  pretrained: True

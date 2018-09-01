@@ -5,6 +5,7 @@ import sys
 
 from protoseg import Config
 from protoseg import DataLoader
+from protoseg import Model
 from protoseg import Trainer
 from protoseg import backends
 
@@ -26,8 +27,14 @@ if __name__ == "__main__":
         if not os.path.exists(resultpath):
             os.makedirs(resultpath)
         configs.save(resultpath + '/config.yml')
+        # get config for current run
+        config = configs.get()
+        # Load Model
+        modelfile = os.path.join('results/', run, 'model.checkpoint')
+        model = Model(config, modelfile)
+
         dataloader = DataLoader(datapath)
-        backends.set_backend(configs.get()['backend'])
-        trainer = Trainer(configs.get(), dataloader)
+        backends.set_backend(config['backend'])
+        trainer = Trainer(config, model, dataloader)
         trainer.train()
     sys.exit(0)
