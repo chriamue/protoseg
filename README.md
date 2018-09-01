@@ -2,6 +2,10 @@
 
 Prototyped Segmentation
 
+## Workflow
+
+![workflow diagram](http://www.plantuml.com/plantuml/proxy?src=https://raw.github.com/chriamue/protoseg/master/res/workflow.puml)
+
 ## Data
 
 Images should be copied to ./data folder.

@@ -1,0 +1,13 @@
+@startuml Workflow
+package "Workflow" as Workflow {
+    card "Load Data" as DataLoad
+    card "Data Augmentation" as Augmentation
+    card "Training" as Training
+    card "Prediction" as Prediction
+}
+
+DataLoad --> Augmentation
+Augmentation --> Training
+Training --> Prediction
+
+@enduml
