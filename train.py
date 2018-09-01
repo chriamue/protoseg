@@ -33,7 +33,7 @@ if __name__ == "__main__":
         modelfile = os.path.join('results/', run, 'model.checkpoint')
         model = Model(config, modelfile)
 
-        dataloader = DataLoader(datapath)
+        dataloader = DataLoader(datapath, config=config, mode='train')
         backends.set_backend(config['backend'])
         trainer = Trainer(config, model, dataloader)
         trainer.train()

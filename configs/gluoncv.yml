@@ -5,3 +5,5 @@ run1_gluoncv:
   batch_size: 1
   learn_rate: 0.001
   pretrained: True
+  width: 480
+  height: 480

@@ -6,13 +6,17 @@ from . import backends
 class Trainer():
 
     epoch = 0
+    loss = 0.0
     
     def before_epoch(self):
         print('starting epoch:', self.epoch)
+        self.loss = 0.0
 
     def after_epoch(self):
-        print('epoch finished')
+        print('epoch finished. loss:', self.loss)
+        
         backends.backend().save_model(self.model)
+
 
 
     before_epoch_callback = before_epoch

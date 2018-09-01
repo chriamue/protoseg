@@ -3,5 +3,7 @@ run1_gluoncv:
   backend: gluoncv_backend
   batch_size: 1
   epochs: 10
+  height: 480
   learn_rate: 0.001
   pretrained: true
+  width: 480
