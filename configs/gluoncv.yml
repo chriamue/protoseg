@@ -1,0 +1,3 @@
+run1_gluoncv:
+  backend: gluoncv
+  backbone: resnet50
