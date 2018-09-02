@@ -22,21 +22,36 @@ class DataLoader():
 
         self.images = (os.path.join(_image_dir, f)
                        for f in os.listdir(_image_dir))
-        self.masks = (os.path.join(_masks_dir, f)
-                      for f in os.listdir(_masks_dir))
+        if mode != 'test':
+            self.masks = (os.path.join(_masks_dir, f)
+                          for f in os.listdir(_masks_dir))
 
         self.images = sorted(self.images)
         self.masks = sorted(self.masks)
         if mode != 'test':
             assert (len(self.images) == len(self.masks))
 
+    def resize(self, img, mask=None, width=None, height=None):
+        img = cv2.resize(img, (width or self.config['width'], height or self.config['height']))
+        if mask is None:
+            return img
+        mask = cv2.resize(
+            mask, (width or self.config['width'], height or self.config['height']), interpolation=cv2.INTER_NEAREST)
+        return img, mask
+
     def __getitem__(self, index):
 
         img = cv2.imread(self.images[index], cv2.IMREAD_UNCHANGED)
+
+        if self.mode == 'test':
+            img = self.resize(img)
+            return backends.backend().dataloader_format(img), self.images[index]
+
         mask = cv2.imread(self.masks[index], cv2.IMREAD_UNCHANGED)
 
+        img, mask = self.resize(img, mask)
+
         if self.augmentation:
-            img, mask = self.augmentation.resize(img, mask)
             img, mask = self.augmentation.random_flip(img, mask)
             img, mask = self.augmentation.random_rotation(img, mask)
             img, mask = self.augmentation.random_shift(img, mask)

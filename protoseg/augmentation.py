@@ -10,14 +10,6 @@ class Augmentation():
         self.config = config
         assert(config)
 
-    def resize(self, img, mask=None):
-        img = cv2.resize(img, (self.config['width'], self.config['height']))
-        if mask is None:
-            return img
-        mask = cv2.resize(
-            mask, (self.config['width'], self.config['height']), interpolation=cv2.INTER_NEAREST)
-        return img, mask
-
     def random_flip(self, img, mask=None):
         """Apply random flip to single image and label."""
         if not self.config['flip']:

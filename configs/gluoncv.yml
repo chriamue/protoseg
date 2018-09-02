@@ -7,6 +7,8 @@ run1_gluoncv:
   pretrained: True
   width: 480
   height: 480
+  orig_width: 580
+  orig_height: 420
   summarysteps: 1
   flip: True
   zoom_in: 0.5

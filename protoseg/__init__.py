@@ -5,6 +5,7 @@ from . import backends
 from .augmentation import Augmentation
 from .config import Config
 from .dataloader import DataLoader
+from .predictor import Predictor
 from .trainer import Trainer
 from .model import Model
 

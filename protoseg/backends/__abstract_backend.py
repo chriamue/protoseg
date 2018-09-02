@@ -15,8 +15,11 @@ class AbstractBackend():
     def train_epoch(self, trainer):
         pass
 
-    def predict(self):
+    def get_summary_writer(self, logdir='results/'):
         pass
 
-    def get_summary_writer(self, logdir='results/'):
+    def predict(self, predictor, img):
+        pass
+
+    def batch_predict(self, predictor, img_batch):
         pass

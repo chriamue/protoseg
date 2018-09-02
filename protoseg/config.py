@@ -10,6 +10,7 @@ class Config():
                'batch_size': 1, 'learn_rate': 1.0, 'epochs': 1,  # hyperparameter
                'pretrained': False,
                'width': 480, 'height': 480,
+               'orig_width': 512, 'orig_height': 512,
                'flip': False, 'horizontal_flip': True,
                'rotation_degree': 0,
                'horizontal_shift': 0, 'vertical_shift': 0,
