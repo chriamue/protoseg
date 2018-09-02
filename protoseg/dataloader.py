@@ -21,7 +21,7 @@ class DataLoader():
         _masks_dir = os.path.join(root, mode + "_masks")
 
         self.images = (os.path.join(_image_dir, f)
-                       for f in os.listdir(_image_dir))
+                       for f in os.listdir(_image_dir) if "mask" not in f)
         if mode != 'test':
             self.masks = (os.path.join(_masks_dir, f)
                           for f in os.listdir(_masks_dir))
