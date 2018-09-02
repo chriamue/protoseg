@@ -2,6 +2,7 @@ from __future__ import absolute_import
 name = "protoseg"
 
 from . import backends
+from .augmentation import Augmentation
 from .config import Config
 from .dataloader import DataLoader
 from .trainer import Trainer

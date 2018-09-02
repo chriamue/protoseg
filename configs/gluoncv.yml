@@ -8,3 +8,10 @@ run1_gluoncv:
   width: 480
   height: 480
   summarysteps: 1
+  flip: True
+  horizontal_flip: True
+  rotation_degree: 30
+  horizontal_shift: 20
+  vertical_shift: 30
+  noise_amount: 20
+  noise_chance: 0.5

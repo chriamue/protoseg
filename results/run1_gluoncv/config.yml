@@ -3,8 +3,15 @@ run1_gluoncv:
   backend: gluoncv_backend
   batch_size: 1
   epochs: 10
+  flip: true
   height: 480
+  horizontal_flip: true
+  horizontal_shift: 20
   learn_rate: 0.001
+  noise_amount: 20
+  noise_chance: 0.5
   pretrained: true
+  rotation_degree: 30
   summarysteps: 1
+  vertical_shift: 30
   width: 480

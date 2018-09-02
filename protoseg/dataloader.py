@@ -10,10 +10,11 @@ class DataLoader():
     images = []
     masks = []
 
-    def __init__(self, root='data/', config=None, mode='train'):
+    def __init__(self, root='data/', config=None, mode='train', augmentation = None):
         self.root = root
         self.config = config
         self.mode = mode
+        self.augmentation = augmentation
         assert(config)
 
         _image_dir = os.path.join(root, mode)
@@ -39,7 +40,12 @@ class DataLoader():
         img = cv2.imread(self.images[index], cv2.IMREAD_UNCHANGED)
         mask = cv2.imread(self.masks[index], cv2.IMREAD_GRAYSCALE)
 
-        img, mask = self.resize(img, mask)
+        if self.augmentation:
+            img, mask =  self.augmentation.resize(img, mask)
+            img, mask = self.augmentation.random_flip(img, mask)
+            img, mask = self.augmentation.random_rotation(img, mask)
+            img, mask = self.augmentation.random_shift(img, mask)
+            img = self.augmentation.random_noise(img)
 
         return backends.backend().dataloader_format(img, mask)
 

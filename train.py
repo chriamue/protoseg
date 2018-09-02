@@ -3,6 +3,7 @@
 import os
 import sys
 
+from protoseg import Augmentation
 from protoseg import Config
 from protoseg import DataLoader
 from protoseg import Model
@@ -34,8 +35,10 @@ if __name__ == "__main__":
         # Load Model
         modelfile = os.path.join('results/', run, 'model.checkpoint')
         model = Model(config, modelfile)
-
-        dataloader = DataLoader(datapath, config=config, mode='train')
+        # augmentation
+        augmentation = Augmentation(config=config)
+        # dataloader
+        dataloader = DataLoader(datapath, config=config, mode='train', augmentation=augmentation)
         backends.set_backend(config['backend'])
         trainer = Trainer(config, model, dataloader, summarywriter=summarywriter)
         trainer.train()

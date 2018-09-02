@@ -14,6 +14,16 @@ class Config():
             with open(configs) as file:
                 self.configs = yaml.load(file)
         self.keys = list(self.configs.keys())
+        for run in self:
+            self.fill_missing(self.get())
+
+    def fill_missing(self, config):
+        if config.get('flip') is None:
+            config['flip'] = False
+        if config.get('horizontal_flip') is None:
+            config['horizontal_flip'] = True
+        if config.get('rotation_degree') is None:
+            config['rotation_degree'] = 0
 
     def __iter__(self):
         self.current = -1
