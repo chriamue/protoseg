@@ -24,10 +24,11 @@ class Trainer():
     before_epoch_callback = before_epoch
     after_epoch_callback = after_epoch
 
-    def __init__(self, config = None, model = None, dataloader = None, summarywriter=None):
+    def __init__(self, config = None, model = None, dataloader = None, valdataloader=None, summarywriter=None):
         self.config = config
         self.model = model
         self.dataloader = dataloader
+        self.valdataloader = valdataloader
         self.summarywriter = summarywriter
         assert(config)
         assert(model)
@@ -48,6 +49,9 @@ class Trainer():
                 self.before_epoch_callback()
             
             backends.backend().train_epoch(self)
+
+            if self.valdataloader:
+                backends.backend().validate_epoch(self)
 
             if self.after_epoch_callback:
                 self.after_epoch_callback()

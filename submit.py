@@ -30,7 +30,7 @@ def run_length_enc(label):
     length = end - start
     res = [[s+1, l+1] for s, l in zip(list(start), list(length))]
     res = list(chain.from_iterable(res))
-    return res#' '.join([str(r) for r in res])
+    return res  # ' '.join([str(r) for r in res])
 
 
 def help():
@@ -41,7 +41,7 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         print(help())
         sys.exit(1)
-    configs = Config(sys.argv[1])    
+    configs = Config(sys.argv[1])
     for run in configs:
         print("create submission for: ", run)
         resultpath = os.path.join(resultspath, run)
@@ -70,11 +70,14 @@ if __name__ == "__main__":
                 print('{}/{}'.format(index+1, len(dataloader)))
 
                 mask = predictor.predict(img)
-                mask = dataloader.resize(mask, width=config['orig_width'], height=config['orig_height'])
+                mask = cv2.resize(
+                    mask, (config['orig_width'], config['orig_height']), interpolation=cv2.INTER_NEAREST)
                 save = False
                 if save:
-                    imgfile = os.path.join(resultpath, os.path.basename(filename).split(".")[0]+".png")
+                    imgfile = os.path.join(resultpath, os.path.basename(
+                        filename).split(".")[0]+".png")
                     cv2.imwrite(imgfile, mask*255)
                 enc = run_length_enc(mask)
-                f.write('{},{}\n'.format(os.path.basename(filename).split(".")[0], ' '.join(map(str, enc))))
+                f.write('{},{}\n'.format(os.path.basename(
+                    filename).split(".")[0], ' '.join(map(str, enc))))
     sys.exit(0)

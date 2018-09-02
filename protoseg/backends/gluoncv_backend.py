@@ -91,15 +91,25 @@ class gluoncv_backend(AbstractBackend):
                         "image", (X_batch[0]/255.0), global_step=trainer.global_step)
                     trainer.summarywriter.add_image(
                         "mask", (y_batch[0]/255.0), global_step=trainer.global_step)
-                    # with autograd.predict_mode():
-                    #    outputs2 = trainer.model.model.module(X_batch.as_in_context(self.ctx))
                     output, _ = outputs[0]
-                    #    print(output, outputs[0])
                     predict = mxnet.nd.squeeze(
                         mxnet.nd.argmax(output, 1)).asnumpy().clip(0, 1)
                     trainer.summarywriter.add_image(
                         "predicted", (predict), global_step=trainer.global_step)
         print('train on gluoncv backend')
+
+    def validate_epoch(self, trainer):
+        batch_size = trainer.config['batch_size']
+        dataloader = DataLoader(
+            dataset=trainer.valdataloader, batch_size=batch_size, last_batch='rollover', num_workers=batch_size)
+        for i, (X_batch, y_batch) in enumerate(dataloader):
+            prediction = self.batch_predict(trainer, X_batch)
+            trainer.summarywriter.add_image(
+                        "val_image", (X_batch[0]/255.0), global_step=trainer.epoch)
+            trainer.summarywriter.add_image(
+                "val_mask", (y_batch[0]/255.0), global_step=trainer.epoch)
+            trainer.summarywriter.add_image(
+                "val_predicted", (prediction), global_step=trainer.epoch)
 
     def get_summary_writer(self, logdir='results/'):
         return SummaryWriter(logdir=logdir)
@@ -110,6 +120,10 @@ class gluoncv_backend(AbstractBackend):
 
     def batch_predict(self, predictor, img_batch):
         model = predictor.model.model
+        try:
+            model = model.module
+        except Exception:
+            pass
         with autograd.predict_mode():
             outputs = model(img_batch.as_in_context(self.ctx))
             output, _ = outputs

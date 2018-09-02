@@ -37,9 +37,11 @@ if __name__ == "__main__":
         model = Model(config, modelfile)
         # augmentation
         augmentation = Augmentation(config=config)
-        # dataloader
+        # data loader
         dataloader = DataLoader(datapath, config=config, mode='train', augmentation=augmentation)
+        # validation data loader
+        valdataloader = DataLoader(datapath, config=config, mode='val')
         backends.set_backend(config['backend'])
-        trainer = Trainer(config, model, dataloader, summarywriter=summarywriter)
+        trainer = Trainer(config, model, dataloader, valdataloader=valdataloader, summarywriter=summarywriter)
         trainer.train()
     sys.exit(0)
