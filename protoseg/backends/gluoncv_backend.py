@@ -51,9 +51,11 @@ class gluoncv_backend(AbstractBackend):
                                               kvstore=kv)
 
     def dataloader_format(self, img, mask):
-        
-        img = cv2.cvtColor(img,cv2.COLOR_GRAY2RGB)
+        if img.ndim == 2:
+            img = cv2.cvtColor(img,cv2.COLOR_GRAY2RGB)
         img = np.rollaxis(img, axis=2, start=0)
+        if mask.ndim == 3:
+            mask = cv2.cvtColor(mask, cv2.COLOR_RGB2GRAY)
         return mxnet.nd.array(img), mxnet.nd.array(mask)
 
     def train_epoch(self, trainer):

@@ -10,7 +10,7 @@ class DataLoader():
     images = []
     masks = []
 
-    def __init__(self, root='data/', config=None, mode='train', augmentation = None):
+    def __init__(self, root='data/', config=None, mode='train', augmentation=None):
         self.root = root
         self.config = config
         self.mode = mode
@@ -30,22 +30,19 @@ class DataLoader():
         if mode != 'test':
             assert (len(self.images) == len(self.masks))
 
-    def resize(self, img, mask):
-        img = cv2.resize(img, (self.config['width'], self.config['height']))
-        mask = cv2.resize(mask, (self.config['width'], self.config['height']),interpolation=cv2.INTER_NEAREST)
-        return img, mask
-
     def __getitem__(self, index):
 
         img = cv2.imread(self.images[index], cv2.IMREAD_UNCHANGED)
-        mask = cv2.imread(self.masks[index], cv2.IMREAD_GRAYSCALE)
+        mask = cv2.imread(self.masks[index], cv2.IMREAD_UNCHANGED)
 
         if self.augmentation:
-            img, mask =  self.augmentation.resize(img, mask)
+            img, mask = self.augmentation.resize(img, mask)
             img, mask = self.augmentation.random_flip(img, mask)
             img, mask = self.augmentation.random_rotation(img, mask)
             img, mask = self.augmentation.random_shift(img, mask)
+            img, mask = self.augmentation.random_zoom(img, mask)
             img = self.augmentation.random_noise(img)
+            img = self.augmentation.random_brightness(img)
 
         return backends.backend().dataloader_format(img, mask)
 

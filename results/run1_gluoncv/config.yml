@@ -6,12 +6,18 @@ run1_gluoncv:
   flip: true
   height: 480
   horizontal_flip: true
-  horizontal_shift: 20
+  horizontal_shift: 0
   learn_rate: 0.001
-  noise_amount: 20
-  noise_chance: 0.5
+  max_bright: 30
+  max_val: 255
+  min_bright: -20
+  min_val: 0
+  noise_amount: 0
+  noise_chance: 0
   pretrained: true
-  rotation_degree: 30
+  rotation_degree: 0
   summarysteps: 1
-  vertical_shift: 30
+  vertical_shift: 0
   width: 480
+  zoom_in: 0.5
+  zoom_out: 0.5

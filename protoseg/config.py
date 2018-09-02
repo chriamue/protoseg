@@ -1,9 +1,23 @@
 import yaml
 
+
 class Config():
 
     keys = []
     current = -1
+
+    default = {'backend': 'gluoncv_backend', 'backbone': 'resnet50',
+               'batch_size': 1, 'learn_rate': 1.0, 'epochs': 1,  # hyperparameter
+               'pretrained': False,
+               'width': 480, 'height': 480,
+               'flip': False, 'horizontal_flip': True,
+               'rotation_degree': 0,
+               'horizontal_shift': 0, 'vertical_shift': 0,
+               'noise_amount': 0, 'noise_chance': 0,
+               'min_val': 0, 'max_val': 255,  # pixel values
+               'min_bright': -20, 'max_bright': +30,  # brightness
+               'zoom_in': 0, 'zoom_out': 0  # zoom
+               }
 
     def __init__(self, configs={}):
         """
@@ -18,12 +32,9 @@ class Config():
             self.fill_missing(self.get())
 
     def fill_missing(self, config):
-        if config.get('flip') is None:
-            config['flip'] = False
-        if config.get('horizontal_flip') is None:
-            config['horizontal_flip'] = True
-        if config.get('rotation_degree') is None:
-            config['rotation_degree'] = 0
+        for key in self.default.keys():
+            if config.get(key) is None:
+                config[key] = self.default[key]
 
     def __iter__(self):
         self.current = -1
@@ -47,7 +58,8 @@ class Config():
         save current config to given path as yaml file
         """
         with open(path, 'w') as outfile:
-            yaml.dump({self.keys[self.current]: self[self.current]}, outfile, default_flow_style=False)
+            yaml.dump({self.keys[self.current]: self[self.current]},
+                      outfile, default_flow_style=False)
 
     def get(self, key=None):
         if key is None:
