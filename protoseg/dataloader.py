@@ -41,13 +41,19 @@ class DataLoader():
 
     def __getitem__(self, index):
 
-        img = cv2.imread(self.images[index], cv2.IMREAD_UNCHANGED)
+        if self.config['gray_img']:
+            img = cv2.imread(self.images[index], cv2.IMREAD_GRAYSCALE)
+        else:
+            img = cv2.imread(self.images[index], cv2.IMREAD_UNCHANGED)
 
         if self.mode == 'test':
             img = self.resize(img)
             return backends.backend().dataloader_format(img), self.images[index]
 
-        mask = cv2.imread(self.masks[index], cv2.IMREAD_UNCHANGED)
+        if self.config['gray_mask']:
+            mask = cv2.imread(self.masks[index], cv2.IMREAD_GRAYSCALE)
+        else:
+            mask = cv2.imread(self.masks[index], cv2.IMREAD_UNCHANGED)
 
         img, mask = self.resize(img, mask)
 

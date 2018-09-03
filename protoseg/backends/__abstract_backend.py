@@ -14,6 +14,9 @@ class AbstractBackend():
 
     def train_epoch(self, trainer):
         pass
+    
+    def validate_epoch(self, trainer):
+        pass
 
     def get_summary_writer(self, logdir='results/'):
         pass
