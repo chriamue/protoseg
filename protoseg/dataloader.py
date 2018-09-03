@@ -43,6 +43,8 @@ class DataLoader():
 
         if self.config['gray_img']:
             img = cv2.imread(self.images[index], cv2.IMREAD_GRAYSCALE)
+        elif self.config['color_img']:
+            img = cv2.imread(self.images[index], cv2.IMREAD_COLOR)
         else:
             img = cv2.imread(self.images[index], cv2.IMREAD_UNCHANGED)
 
@@ -52,6 +54,8 @@ class DataLoader():
 
         if self.config['gray_mask']:
             mask = cv2.imread(self.masks[index], cv2.IMREAD_GRAYSCALE)
+        elif self.config['color_mask']:
+            mask = cv2.imread(self.masks[index], cv2.IMREAD_COLOR)
         else:
             mask = cv2.imread(self.masks[index], cv2.IMREAD_UNCHANGED)
 

@@ -12,6 +12,7 @@ class Config():
                'width': 480, 'height': 480,
                'orig_width': 512, 'orig_height': 512,
                'gray_img': False, 'gray_mask': False,
+               'color_img': False, 'color_mask': False,
                'flip': False, 'horizontal_flip': True,
                'rotation_degree': 0,
                'horizontal_shift': 0, 'vertical_shift': 0,

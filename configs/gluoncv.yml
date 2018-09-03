@@ -13,3 +13,5 @@ run1_gluoncv:
   flip: True
   zoom_in: 0.5
   zoom_out: 0.5
+  color_img: True
+  gray_mask: True
