@@ -15,3 +15,7 @@ run1_gluoncv:
   zoom_out: 0.5
   color_img: True
   gray_mask: True
+  filters:
+   - 'protoseg.filters.sobel.sobel': [1,0,5]
+   - 'protoseg.filters.sobel.sobel': [0,1]
+  

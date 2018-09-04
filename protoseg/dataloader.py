@@ -62,6 +62,7 @@ class DataLoader():
         img, mask = self.resize(img, mask)
 
         if self.augmentation:
+            img = self.augmentation.filter(img)
             img, mask = self.augmentation.random_flip(img, mask)
             img, mask = self.augmentation.random_rotation(img, mask)
             img, mask = self.augmentation.random_shift(img, mask)
