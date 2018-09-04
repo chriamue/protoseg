@@ -59,8 +59,6 @@ class DataLoader():
         else:
             mask = cv2.imread(self.masks[index], cv2.IMREAD_UNCHANGED)
 
-        img, mask = self.resize(img, mask)
-
         if self.augmentation:
             img = self.augmentation.filter(img)
             img, mask = self.augmentation.random_flip(img, mask)
@@ -69,6 +67,8 @@ class DataLoader():
             img, mask = self.augmentation.random_zoom(img, mask)
             img = self.augmentation.random_noise(img)
             img = self.augmentation.random_brightness(img)
+        
+        img, mask = self.resize(img, mask)
 
         return backends.backend().dataloader_format(img, mask)
 
