@@ -4,9 +4,6 @@ from importlib import import_module
 import numpy as np
 import cv2
 
-from .filters.sobel import sobel
-
-
 class Augmentation():
 
     def __init__(self, config):
