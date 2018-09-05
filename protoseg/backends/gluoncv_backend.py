@@ -62,6 +62,7 @@ class gluoncv_backend(AbstractBackend):
 
         if mask.ndim == 3:
             mask = cv2.cvtColor(mask, cv2.COLOR_RGB2GRAY)
+        mask[mask>0]=1 # binary mask
         return mxnet.nd.array(img), mxnet.nd.array(mask)
 
     def train_epoch(self, trainer):
@@ -90,12 +91,12 @@ class gluoncv_backend(AbstractBackend):
                     trainer.summarywriter.add_image(
                         "image", (X_batch[0]/255.0), global_step=trainer.global_step)
                     trainer.summarywriter.add_image(
-                        "mask", (y_batch[0]/255.0), global_step=trainer.global_step)
+                        "mask", (y_batch[0]), global_step=trainer.global_step)
                     output, _ = outputs[0]
                     predict = mxnet.nd.squeeze(
-                        mxnet.nd.argmax(output, 1)).asnumpy().clip(0, 1)
+                        mxnet.nd.argmax(output, 1)).asnumpy().clip(0, 255)
                     trainer.summarywriter.add_image(
-                        "predicted", (predict/255.0), global_step=trainer.global_step)
+                        "predicted", (predict), global_step=trainer.global_step)
         print('train on gluoncv backend')
 
     def validate_epoch(self, trainer):
@@ -108,9 +109,9 @@ class gluoncv_backend(AbstractBackend):
             trainer.summarywriter.add_image(
                         "val_image", (X_batch[0]/255.0), global_step=trainer.epoch)
             trainer.summarywriter.add_image(
-                "val_mask", (y_batch[0]/255.0), global_step=trainer.epoch)
+                "val_mask", (y_batch[0]), global_step=trainer.epoch)
             trainer.summarywriter.add_image(
-                "val_predicted", (prediction/255.0), global_step=trainer.epoch)
+                "val_predicted", (prediction), global_step=trainer.epoch)
 
     def get_summary_writer(self, logdir='results/'):
         return SummaryWriter(logdir=logdir)

@@ -30,3 +30,4 @@ run1_gluoncv:
     - 'mean_accuracy': 'protoseg.metrices.accuracy.mean_accuracy'
     - 'dice': 'protoseg.metrices.dice.dice'
     - 'jaccard': 'protoseg.metrices.jaccard.jaccard'
+    - 'iou': 'protoseg.metrices.iou.iou'

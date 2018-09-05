@@ -40,7 +40,7 @@ if __name__ == "__main__":
         # data loader
         dataloader = DataLoader(datapath, config=config, mode='train', augmentation=augmentation)
         # validation data loader
-        valdataloader = DataLoader(datapath, config=config, mode='train')
+        valdataloader = DataLoader(datapath, config=config, mode='val')
         backends.set_backend(config['backend'])
         trainer = Trainer(config, model, dataloader, valdataloader=valdataloader, summarywriter=summarywriter)
         trainer.train()
