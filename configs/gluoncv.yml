@@ -17,11 +17,12 @@ run1_gluoncv:
   gray_mask: True
   filters:
 #    - 'cv2.Canny': [100,200]
+#    - 'protoseg.filters.canny.addcanny': [100,200]
 #   - 'protoseg.filters.sobel.sobel': [1,0,5]
 #    - 'protoseg.filters.sobel.sobel': [0,1]
 #    - 'protoseg.filters.laplacian.laplacian': []
-    - 'protoseg.filters.laplacian.addlaplacian': []
-#    - 'protoseg.filters.morphological.erosion': [5,5,2]
+#    - 'protoseg.filters.laplacian.addlaplacian': []
+    - 'protoseg.filters.morphological.erosion': [5,5,1]
 #    - 'protoseg.filters.morphological.dilation': [5,5,2]
 #    - 'protoseg.filters.morphological.opening': [5,5,1]
   
