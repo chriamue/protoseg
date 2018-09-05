@@ -1,6 +1,7 @@
 
 from .config import Config
 from .dataloader import DataLoader
+from .metric import Metric
 from . import backends
 
 class Trainer():
@@ -33,6 +34,7 @@ class Trainer():
         assert(config)
         assert(model)
         assert(dataloader)
+        self.metric = Metric(self.config, self.summarywriter)
         backends.backend().init_trainer(self)
 
     def print_config(self):

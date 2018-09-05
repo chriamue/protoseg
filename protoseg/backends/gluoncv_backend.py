@@ -86,7 +86,7 @@ class gluoncv_backend(AbstractBackend):
                 print(trainer.global_step, i, 'loss:', trainer.loss / (i+1))
                 if trainer.summarywriter:
                     trainer.summarywriter.add_scalar(
-                        tag='loss', value=trainer.loss / (i+1), global_step=trainer.global_step)
+                        tag='loss', value=losses[0].asnumpy()[0], global_step=trainer.global_step)
                     trainer.summarywriter.add_image(
                         "image", (X_batch[0]/255.0), global_step=trainer.global_step)
                     trainer.summarywriter.add_image(
@@ -95,7 +95,7 @@ class gluoncv_backend(AbstractBackend):
                     predict = mxnet.nd.squeeze(
                         mxnet.nd.argmax(output, 1)).asnumpy().clip(0, 1)
                     trainer.summarywriter.add_image(
-                        "predicted", (predict), global_step=trainer.global_step)
+                        "predicted", (predict/255.0), global_step=trainer.global_step)
         print('train on gluoncv backend')
 
     def validate_epoch(self, trainer):
@@ -104,12 +104,13 @@ class gluoncv_backend(AbstractBackend):
             dataset=trainer.valdataloader, batch_size=batch_size, last_batch='rollover', num_workers=batch_size)
         for i, (X_batch, y_batch) in enumerate(dataloader):
             prediction = self.batch_predict(trainer, X_batch)
+            trainer.metric(prediction, y_batch[0].asnumpy())
             trainer.summarywriter.add_image(
                         "val_image", (X_batch[0]/255.0), global_step=trainer.epoch)
             trainer.summarywriter.add_image(
                 "val_mask", (y_batch[0]/255.0), global_step=trainer.epoch)
             trainer.summarywriter.add_image(
-                "val_predicted", (prediction), global_step=trainer.epoch)
+                "val_predicted", (prediction/255.0), global_step=trainer.epoch)
 
     def get_summary_writer(self, logdir='results/'):
         return SummaryWriter(logdir=logdir)
@@ -128,5 +129,5 @@ class gluoncv_backend(AbstractBackend):
             outputs = model(img_batch.as_in_context(self.ctx))
             output, _ = outputs
         predict = mxnet.nd.squeeze(
-            mxnet.nd.argmax(output, 1)).asnumpy().clip(0, 1)
+            mxnet.nd.argmax(output, 1)).asnumpy().clip(0, 255)
         return predict.astype(np.float32)

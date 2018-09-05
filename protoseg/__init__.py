@@ -5,8 +5,9 @@ from . import backends
 from .augmentation import Augmentation
 from .config import Config
 from .dataloader import DataLoader
+from .metric import Metric
+from .model import Model
 from .predictor import Predictor
 from .trainer import Trainer
-from .model import Model
 
 __version__ = '0.0.1'

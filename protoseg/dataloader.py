@@ -1,5 +1,6 @@
 
 import os
+from importlib import import_module
 import numpy as np
 import cv2
 from . import backends
@@ -31,6 +32,25 @@ class DataLoader():
         if mode != 'test':
             assert (len(self.images) == len(self.masks))
 
+        self.filters = []
+        filters = self.config.get('filters')
+        if filters:
+            print('___ loading filters ___')
+            for f in filters:
+                full_function = list(f.keys())[0]
+                module_name, function_name = full_function.rsplit('.', 1)
+                parameters = f[full_function]
+                print(module_name, function_name, parameters)
+                mod = import_module(module_name)
+                met = getattr(mod, function_name)
+                self.filters.append(
+                    {'function': met, 'parameters': parameters})
+
+    def filter(self, img):
+        for f in self.filters:
+            img = f['function'](img, *f['parameters'])
+        return img
+
     def resize(self, img, mask=None, width=None, height=None):
         img = cv2.resize(img, (width or self.config['width'], height or self.config['height']))
         if mask is None:
@@ -47,6 +67,8 @@ class DataLoader():
             img = cv2.imread(self.images[index], cv2.IMREAD_COLOR)
         else:
             img = cv2.imread(self.images[index], cv2.IMREAD_UNCHANGED)
+        
+        img = self.filter(img)
 
         if self.mode == 'test':
             img = self.resize(img)
@@ -60,7 +82,6 @@ class DataLoader():
             mask = cv2.imread(self.masks[index], cv2.IMREAD_UNCHANGED)
 
         if self.augmentation:
-            img = self.augmentation.filter(img)
             img, mask = self.augmentation.random_flip(img, mask)
             img, mask = self.augmentation.random_rotation(img, mask)
             img, mask = self.augmentation.random_shift(img, mask)

@@ -1,6 +1,5 @@
 # source: https://github.com/Naurislv/P12.1-Semantic-Segmentation/blob/master/augmentation.py
 from random import randint, randrange, uniform
-from importlib import import_module
 import numpy as np
 import cv2
 
@@ -9,24 +8,7 @@ class Augmentation():
     def __init__(self, config):
         self.config = config
         assert(config)
-        self.filters = []
-        filters = self.config.get('filters')
-        if filters:
-            print('___ loading filters ___')
-            for f in filters:
-                full_function = list(f.keys())[0]
-                module_name, function_name = full_function.rsplit('.', 1)
-                parameters = f[full_function]
-                print(module_name, function_name, parameters)
-                mod = import_module(module_name)
-                met = getattr(mod, function_name)
-                self.filters.append(
-                    {'function': met, 'parameters': parameters})
-
-    def filter(self, img):
-        for f in self.filters:
-            img = f['function'](img, *f['parameters'])
-        return img
+        
 
     def random_flip(self, img, mask=None):
         """Apply random flip to single image and label."""
