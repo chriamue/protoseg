@@ -7,7 +7,7 @@ with open("README.md", "r") as fh:
 
 
 setuptools.setup(name='protoseg',
-                 version='0.0.1',
+                 version='0.0.2',
                  description='Prototyped Segmentation',
                  long_description=long_description,
                  long_description_content_type="text/markdown",
@@ -18,16 +18,14 @@ setuptools.setup(name='protoseg',
                  install_requires=['numpy>=1.9.1',
                                    'pyyaml',
                                    'h5py',
-                                   'pandas'],
+                                   'scikit-learn'],
                  extras_require={
                      'visualize': ['pydot>=1.2.4'],
                      'tests': ['pytest',
                                'pytest-pep8',
                                'pytest-xdist',
                                'pytest-cov',
-                               'pytest-dependency'
-                               'pandas',
-                               'requests'],
+                               'pytest-dependency'],
                  },
                  packages=setuptools.find_packages(),
                  classifiers=(
