@@ -1,0 +1,23 @@
+run1_ptsemseg:
+  backend: ptsemseg_backend
+  backbone: segnet
+  classes: 2
+  epochs: 10
+  batch_size: 1
+  learn_rate: 0.001
+  pretrained: True
+  width: 512
+  height: 512
+  orig_width: 580
+  orig_height: 420
+  summarysteps: 1
+  flip: True
+  zoom_in: 0.5
+  zoom_out: 0.5
+  color_img: True
+  gray_mask: True
+  filters:
+    - 'protoseg.filters.morphological.erosion': [5,5,1]
+  metrices:
+    - 'pixel_accuracy': 'protoseg.metrices.accuracy.pixel_accuracy'
+    - 'iou': 'protoseg.metrices.iou.iou'

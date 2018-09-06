@@ -66,6 +66,7 @@ class gluoncv_backend(AbstractBackend):
         return mxnet.nd.array(img), mxnet.nd.array(mask)
 
     def train_epoch(self, trainer):
+        print('train on gluoncv backend')
         batch_size = trainer.config['batch_size']
         summarysteps = trainer.config['summarysteps']
 
@@ -97,7 +98,7 @@ class gluoncv_backend(AbstractBackend):
                         mxnet.nd.argmax(output, 1)).asnumpy().clip(0, 255)
                     trainer.summarywriter.add_image(
                         "predicted", (predict), global_step=trainer.global_step)
-        print('train on gluoncv backend')
+
 
     def validate_epoch(self, trainer):
         batch_size = trainer.config['batch_size']

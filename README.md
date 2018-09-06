@@ -13,6 +13,18 @@ Images for training to train folder, the masks to train_masks folder.
 Images for validation to val folder, the masks to val_masks folder.
 Images for testing into test folder.
 
+## Config
+
+Every run is stored in a config file like:
+[config](configs/gluoncv.yml)
+
+## Backends
+
+There should exist multiple backends.
+
+* gluoncv
+* pytorch-semseg
+
 ## Kaggle Competition Data
 
 In folder ./scripts is ultrasound-nerve-segmentation.py which should be run as

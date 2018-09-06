@@ -30,6 +30,8 @@ if __name__ == "__main__":
         configs.save(resultpath + '/config.yml')
         # get config for current run
         config = configs.get()
+        # set backend
+        backends.set_backend(config['backend'])
         # summary
         summarywriter = backends.backend().get_summary_writer(logdir=resultpath)
         # Load Model
@@ -41,7 +43,6 @@ if __name__ == "__main__":
         dataloader = DataLoader(datapath, config=config, mode='train', augmentation=augmentation)
         # validation data loader
         valdataloader = DataLoader(datapath, config=config, mode='val')
-        backends.set_backend(config['backend'])
         trainer = Trainer(config, model, dataloader, valdataloader=valdataloader, summarywriter=summarywriter)
         trainer.train()
     sys.exit(0)

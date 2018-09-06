@@ -31,4 +31,4 @@ class Metric():
             print(name, "{0:.6f}".format(value))
             if self.summarywriter:
                 self.summarywriter.add_scalar(
-                    tag=name, value=value, global_step=self.global_step)
+                    name, value, global_step=self.global_step)
