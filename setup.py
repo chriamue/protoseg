@@ -22,7 +22,8 @@ setuptools.setup(name='protoseg',
                                    'gluoncv',
                                    'pytorch-semseg',
                                    'mxboard',
-                                   'tensorboardx'],
+                                   'tensorboardx',
+                                   'seaborn'],
                  dependency_links=[
                      'http://github.com/chriamue/protoseg/tarball/master#egg=pytorch-semseg'],
                  extras_require={

@@ -66,11 +66,12 @@ class Report():
         return fig, np.array(fig.canvas.renderer._renderer)
 
     def generate(self):
-        images = []
         pp = PdfPages(os.path.join(self.resultspath, os.path.basename(self.configs.filename) + '.pdf'))
         for run in self.configs:
             resultpath = os.path.join(self.resultspath, run)
+
             fig, img = self.plot(resultpath, tag="loss")
+            plt.text(0.05,0.95,run, transform=fig.transFigure, size=24)
             pp.savefig(fig)
             cv2.imwrite(resultpath+'/loss.png', img)
         pp.close()
