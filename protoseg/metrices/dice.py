@@ -3,4 +3,4 @@ import numpy as np
 
 def dice(seg, gt):
     k = 0
-    return np.sum(seg[gt==k])*2.0 / (np.sum(seg) + np.sum(gt))
+    return np.sum(seg[gt==k])*2.0 / (np.sum(seg) + np.sum(gt) + 0.00001)

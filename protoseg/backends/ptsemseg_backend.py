@@ -118,7 +118,7 @@ class ptsemseg_backend(AbstractBackend):
     def validate_epoch(self, trainer):
         batch_size = trainer.config['batch_size']
         dataloader = data.DataLoader(
-            trainer.dataloader, batch_size=batch_size, num_workers=min(batch_size, 8), shuffle=True
+            trainer.valdataloader, batch_size=batch_size, num_workers=min(batch_size, 8), shuffle=True
         )
         for i, (X_batch, y_batch) in enumerate(dataloader):
             prediction = self.batch_predict(trainer, X_batch)
@@ -149,6 +149,3 @@ class ptsemseg_backend(AbstractBackend):
         outputs = model(images)
         pred = np.squeeze(outputs.data.max(1)[1].cpu().numpy(), axis=0)
         return pred
-        predict = mxnet.nd.squeeze(
-            mxnet.nd.argmax(output, 1)).asnumpy().clip(0, 255)
-        return predict.astype(np.float32)
