@@ -20,7 +20,7 @@ setuptools.setup(name='protoseg',
                                    'h5py',
                                    'scikit-learn',
                                    'gluoncv',
-                                   'git+https://github.com/chriamue/pytorch-semseg',
+                                   'pytorch-semseg',
                                    'mxboard',
                                    'tensorboardx'],
                  extras_require={
