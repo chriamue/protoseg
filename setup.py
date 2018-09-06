@@ -23,6 +23,8 @@ setuptools.setup(name='protoseg',
                                    'pytorch-semseg',
                                    'mxboard',
                                    'tensorboardx'],
+                 dependency_links=[
+                     'http://github.com/chriamue/protoseg/tarball/master#egg=pytorch-semseg'],
                  extras_require={
                      'visualize': ['pydot>=1.2.4'],
                      'tests': ['pytest',

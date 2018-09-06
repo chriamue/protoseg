@@ -95,7 +95,7 @@ class gluoncv_backend(AbstractBackend):
                         "mask", (y_batch[0]), global_step=trainer.global_step)
                     output, _ = outputs[0]
                     predict = mxnet.nd.squeeze(
-                        mxnet.nd.argmax(output, 1)).asnumpy().clip(0, 255)
+                        mxnet.nd.argmax(output, 1)).asnumpy().clip(0, 1)
                     trainer.summarywriter.add_image(
                         "predicted", (predict), global_step=trainer.global_step)
 
@@ -131,5 +131,5 @@ class gluoncv_backend(AbstractBackend):
             outputs = model(img_batch.as_in_context(self.ctx))
             output, _ = outputs
         predict = mxnet.nd.squeeze(
-            mxnet.nd.argmax(output, 1)).asnumpy().clip(0, 255)
+            mxnet.nd.argmax(output, 1)).asnumpy().clip(0, 1)
         return predict.astype(np.float32)

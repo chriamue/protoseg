@@ -30,6 +30,7 @@ class Config():
         else:
             with open(configs) as file:
                 self.configs = yaml.load(file)
+                self.filename = configs
         self.keys = list(self.configs.keys())
         for run in self:
             self.fill_missing(self.get())

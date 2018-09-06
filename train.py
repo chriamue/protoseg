@@ -8,6 +8,7 @@ from protoseg import Config
 from protoseg import DataLoader
 from protoseg import Model
 from protoseg import Trainer
+from protoseg import Report
 from protoseg import backends
 
 datapath = 'data/'
@@ -45,4 +46,8 @@ if __name__ == "__main__":
         valdataloader = DataLoader(datapath, config=config, mode='val')
         trainer = Trainer(config, model, dataloader, valdataloader=valdataloader, summarywriter=summarywriter)
         trainer.train()
+    
+    report = Report(configs, resultspath)
+    report.generate()
+    
     sys.exit(0)
