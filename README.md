@@ -25,6 +25,39 @@ There should exist multiple backends.
 * gluoncv
 * pytorch-semseg
 
+```yml
+gluoncv:
+  backend: gluoncv_backend
+  backbone: resnet50
+```
+
+```yml
+ptsemseg_unet:
+  backend: ptsemseg_backend
+  backbone: unet
+  classes: 2
+  width: 572
+  height: 572
+  mask_width: 388
+  mask_height: 388
+  orig_width: 768
+  orig_height: 768
+  gray_img: True
+```
+
+```yml
+ptsemseg_segnet:
+  backend: ptsemseg_backend
+  backbone: segnet
+  classes: 2
+  width: 512
+  height: 512
+```
+
+## Report
+
+A report as PDF file of the results can be created.
+
 ## Kaggle Competition Data
 
 In folder ./scripts is ultrasound-nerve-segmentation.py which should be run as
