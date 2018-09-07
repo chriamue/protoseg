@@ -62,7 +62,7 @@ class gluoncv_backend(AbstractBackend):
 
         if mask.ndim == 3:
             mask = cv2.cvtColor(mask, cv2.COLOR_RGB2GRAY)
-        mask[mask>0]=1 # binary mask
+        mask[mask > 0] = 1  # binary mask
         return mxnet.nd.array(img), mxnet.nd.array(mask)
 
     def train_epoch(self, trainer):
@@ -99,16 +99,15 @@ class gluoncv_backend(AbstractBackend):
                     trainer.summarywriter.add_image(
                         "predicted", (predict), global_step=trainer.global_step)
 
-
     def validate_epoch(self, trainer):
         batch_size = trainer.config['batch_size']
         dataloader = DataLoader(
             dataset=trainer.valdataloader, batch_size=batch_size, last_batch='rollover', num_workers=batch_size)
         for i, (X_batch, y_batch) in enumerate(dataloader):
             prediction = self.batch_predict(trainer, X_batch)
-            trainer.metric(prediction, y_batch[0].asnumpy())
+            trainer.metric(prediction[0], y_batch[0].asnumpy())
             trainer.summarywriter.add_image(
-                        "val_image", (X_batch[0]/255.0), global_step=trainer.epoch)
+                "val_image", (X_batch[0]/255.0), global_step=trainer.epoch)
             trainer.summarywriter.add_image(
                 "val_mask", (y_batch[0]), global_step=trainer.epoch)
             trainer.summarywriter.add_image(
@@ -130,6 +129,5 @@ class gluoncv_backend(AbstractBackend):
         with autograd.predict_mode():
             outputs = model(img_batch.as_in_context(self.ctx))
             output, _ = outputs
-        predict = mxnet.nd.squeeze(
-            mxnet.nd.argmax(output, 1)).asnumpy().clip(0, 1)
+        predict = mxnet.nd.argmax(output, 1).asnumpy().clip(0, 1)
         return predict.astype(np.float32)

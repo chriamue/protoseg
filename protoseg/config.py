@@ -6,7 +6,8 @@ class Config():
     keys = []
     current = -1
 
-    default = {'backend': 'gluoncv_backend', 'backbone': 'resnet50',
+    default = {'datapath': 'data/',
+               'backend': 'gluoncv_backend', 'backbone': 'resnet50',
                'batch_size': 1, 'learn_rate': 1.0, 'epochs': 1,  # hyperparameter
                'pretrained': False, 'summarysteps': 100, 'classes': 1,
                'width': 480, 'height': 480,

@@ -11,7 +11,6 @@ from protoseg import Trainer
 from protoseg import Report
 from protoseg import backends
 
-datapath = 'data/'
 resultspath = 'results/'
 
 def help():
@@ -41,9 +40,9 @@ if __name__ == "__main__":
         # augmentation
         augmentation = Augmentation(config=config)
         # data loader
-        dataloader = DataLoader(datapath, config=config, mode='train', augmentation=augmentation)
+        dataloader = DataLoader(config=config, mode='train', augmentation=augmentation)
         # validation data loader
-        valdataloader = DataLoader(datapath, config=config, mode='val')
+        valdataloader = DataLoader(config=config, mode='val')
         trainer = Trainer(config, model, dataloader, valdataloader=valdataloader, summarywriter=summarywriter)
         trainer.train()
     

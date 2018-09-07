@@ -1,5 +1,6 @@
 
 import os
+from os.path import expanduser
 from importlib import import_module
 import numpy as np
 import cv2
@@ -11,15 +12,15 @@ class DataLoader():
     images = []
     masks = []
 
-    def __init__(self, root='data/', config=None, mode='train', augmentation=None):
-        self.root = root
+    def __init__(self, config=None, mode='train', augmentation=None):
         self.config = config
+        self.root = expanduser(config['datapath'])
         self.mode = mode
         self.augmentation = augmentation
         assert(config)
 
-        _image_dir = os.path.join(root, mode)
-        _masks_dir = os.path.join(root, mode + "_masks")
+        _image_dir = os.path.join(self.root, mode)
+        _masks_dir = os.path.join(self.root, mode + "_masks")
 
         self.images = (os.path.join(_image_dir, f)
                        for f in os.listdir(_image_dir) if "mask" not in f)
@@ -55,6 +56,10 @@ class DataLoader():
         img = cv2.resize(img, (width or self.config['width'], height or self.config['height']))
         if mask is None:
             return img
+        if self.config.get('mask_width'):
+            width = self.config['mask_width']
+        if self.config.get('mask_height'):
+            height = self.config['mask_height']
         mask = cv2.resize(
             mask, (width or self.config['width'], height or self.config['height']), interpolation=cv2.INTER_NEAREST)
         return img, mask

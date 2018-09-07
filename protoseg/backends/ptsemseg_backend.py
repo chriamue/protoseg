@@ -111,9 +111,9 @@ class ptsemseg_backend(AbstractBackend):
                     'image', images[0], global_step=trainer.global_step)
                 trainer.summarywriter.add_image(
                     'mask', labels[0], global_step=trainer.global_step)
-                pred = np.squeeze(outputs.data.max(1)[1].cpu().numpy(), axis=0)
+                pred = outputs.data.max(1)[1].cpu().numpy()
                 trainer.summarywriter.add_image(
-                    'predicted', pred, global_step=trainer.global_step)
+                    'predicted', pred[0], global_step=trainer.global_step)
 
     def validate_epoch(self, trainer):
         batch_size = trainer.config['batch_size']
@@ -122,7 +122,7 @@ class ptsemseg_backend(AbstractBackend):
         )
         for i, (X_batch, y_batch) in enumerate(dataloader):
             prediction = self.batch_predict(trainer, X_batch)
-            trainer.metric(prediction, y_batch[0].numpy())
+            trainer.metric(prediction[0], y_batch[0].numpy())
             trainer.summarywriter.add_image(
                 "val_image", (X_batch[0]/255.0), global_step=trainer.epoch)
             trainer.summarywriter.add_image(
@@ -147,5 +147,5 @@ class ptsemseg_backend(AbstractBackend):
         model.eval()
         images = img_batch.to(self.device)
         outputs = model(images)
-        pred = np.squeeze(outputs.data.max(1)[1].cpu().numpy(), axis=0)
+        pred = outputs.data.max(1)[1].cpu().numpy()
         return pred
