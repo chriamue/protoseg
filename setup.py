@@ -5,9 +5,11 @@ import setuptools
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
+with open('requirements.txt') as f:
+    requirements = f.read().splitlines()
 
 setuptools.setup(name='protoseg',
-                 version='0.0.2',
+                 version='0.0.3',
                  description='Prototyped Segmentation',
                  long_description=long_description,
                  long_description_content_type="text/markdown",
@@ -15,17 +17,7 @@ setuptools.setup(name='protoseg',
                  author='chriamue',
                  author_email='chriamue@gmail.com',
                  url="https://github.com/chriamue/protoseg",
-                 install_requires=['numpy>=1.9.1',
-                                   'pyyaml',
-                                   'h5py',
-                                   'scikit-learn',
-                                   'gluoncv',
-                                   'pytorch-semseg',
-                                   'mxboard',
-                                   'tensorboardx',
-                                   'seaborn'],
-                 dependency_links=[
-                     'http://github.com/chriamue/protoseg/tarball/master#egg=pytorch-semseg'],
+                 install_requires=requirements,
                  extras_require={
                      'visualize': ['pydot>=1.2.4'],
                      'tests': ['pytest',

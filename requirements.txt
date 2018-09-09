@@ -1,0 +1,10 @@
+numpy>=1.9.1
+pyyaml
+h5py
+scikit-learn
+gluoncv
+mxboard
+tensorboardx
+seaborn
+pytorch-semseg
+#git+https://github.com/chriamue/pytorch-semseg

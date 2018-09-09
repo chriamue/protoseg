@@ -67,3 +67,8 @@ python3 ./scripts/ultrasound-nerve-segmentation.py /path/to/competition-data dat
 ```
 
 The script extracts competition images and copies them to the data folder.
+
+## Usefull links
+
+[A 2017 Guide to Semantic Segmentation with Deep Learning](http://blog.qure.ai/notes/semantic-segmentation-deep-learning-review)
+[Satellite Image Segmentation: a Workflow with U-Net](https://medium.com/vooban-ai/satellite-image-segmentation-a-workflow-with-u-net-7ff992b2a56e)

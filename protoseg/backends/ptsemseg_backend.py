@@ -10,13 +10,16 @@ import torchvision.models as models
 
 from torch.utils import data
 from tqdm import tqdm
-
-from ptsemseg.models import get_model
-from ptsemseg.loader import get_loader, get_data_path
-from ptsemseg.metrics import runningScore
-from ptsemseg.loss import *
-from ptsemseg.augmentations import *
-from ptsemseg.utils import convert_state_dict
+try:
+    from ptsemseg.models import get_model
+    from ptsemseg.loader import get_loader, get_data_path
+    from ptsemseg.metrics import runningScore
+    from ptsemseg.loss import *
+    from ptsemseg.augmentations import *
+    from ptsemseg.utils import convert_state_dict
+except Exception as e:
+    print(e)
+    print('try pip install git+https://github.com/chriamue/pytorch-semseg')
 
 from protoseg.backends import AbstractBackend
 from protoseg.trainer import Trainer
@@ -77,7 +80,6 @@ class ptsemseg_backend(AbstractBackend):
 
         mask[mask > 0] = 1  # binary mask
         return torch.from_numpy(img.astype(np.float32)), torch.from_numpy(mask.astype(np.int64))
-        return img.astype(np.float32), mask.astype(np.int64)
 
     def train_epoch(self, trainer):
         batch_size = trainer.config['batch_size']
@@ -128,7 +130,7 @@ class ptsemseg_backend(AbstractBackend):
             trainer.summarywriter.add_image(
                 "val_mask", (y_batch[0]), global_step=trainer.epoch)
             trainer.summarywriter.add_image(
-                "val_predicted", (prediction), global_step=trainer.epoch)
+                "val_predicted", (prediction[0]), global_step=trainer.epoch)
 
     def get_summary_writer(self, logdir='results/'):
         return SummaryWriter(log_dir=logdir)
