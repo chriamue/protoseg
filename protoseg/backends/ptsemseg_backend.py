@@ -7,7 +7,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torchvision.models as models
-
+import torch.onnx
 from torch.utils import data
 from tqdm import tqdm
 try:
@@ -29,12 +29,14 @@ from tensorboardX import SummaryWriter
 
 class ptsemseg_backend(AbstractBackend):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    dummy_input = None  # used for onnx export
+    graph_exported = False
 
     def __init__(self):
         AbstractBackend.__init__(self)
 
     def load_model(self, config, modelfile):
-        model = get_model(config['backbone'],
+        model = get_model({'arch': config['backbone']},
                           config['classes']).to(self.device)
         if os.path.isfile(modelfile):
             print('loaded model from:', modelfile)
@@ -42,6 +44,8 @@ class ptsemseg_backend(AbstractBackend):
             model.load_state_dict(state)
         model = torch.nn.DataParallel(
             model, device_ids=range(torch.cuda.device_count()))
+        self.dummy_input = None
+        self.graph_exported = False
         return model
 
     def save_model(self, model):
@@ -51,6 +55,20 @@ class ptsemseg_backend(AbstractBackend):
         torch.save(state,
                    model.modelfile)
         print('saved model to:', model.modelfile)
+        m = model.model
+        modelfile = model.modelfile.split('.')[0] + ".onnx"
+        try:
+            m = model.model.module
+        except Exception:
+            pass
+        m = m.to(torch.device('cpu'))
+        dummy_input = self.dummy_input
+        try:
+            torch.onnx.export(m, dummy_input, modelfile)
+            print('saved model to:', modelfile)
+        except Exception as e:
+            print(e)
+        m.to(self.device)
 
     def init_trainer(self, trainer):
         if hasattr(trainer.model.model.module, "optimizer"):
@@ -79,7 +97,9 @@ class ptsemseg_backend(AbstractBackend):
             mask = cv2.cvtColor(mask, cv2.COLOR_RGB2GRAY)
 
         mask[mask > 0] = 1  # binary mask
-        return torch.from_numpy(img.astype(np.float32)), torch.from_numpy(mask.astype(np.int64))
+        img = img.astype(np.float32)
+        mask = mask.astype(np.int64)
+        return torch.from_numpy(img), torch.from_numpy(mask)
 
     def train_epoch(self, trainer):
         batch_size = trainer.config['batch_size']
@@ -93,6 +113,8 @@ class ptsemseg_backend(AbstractBackend):
         for (images, labels) in dataloader:
             trainer.global_step += 1
             trainer.model.model.train()
+            if self.dummy_input is None:
+                self.dummy_input = images.to(torch.device('cpu'))
             images = images.to(self.device)
             labels = labels.to(self.device)
 
@@ -116,6 +138,13 @@ class ptsemseg_backend(AbstractBackend):
                 pred = outputs.data.max(1)[1].cpu().numpy()
                 trainer.summarywriter.add_image(
                     'predicted', pred[0], global_step=trainer.global_step)
+                if not self.graph_exported:
+                    try:
+                        trainer.summarywriter.add_graph(
+                            trainer.model.model, images)
+                        self.graph_exported = True
+                    except Exception as e:
+                        print(e)
 
     def validate_epoch(self, trainer):
         batch_size = trainer.config['batch_size']

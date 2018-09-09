@@ -1,0 +1,34 @@
+ptsemseg_linknet:
+  backend: ptsemseg_backend
+  backbone: linknet
+  classes: 2
+  epochs: 10
+  batch_size: 2
+  learn_rate: 0.001
+  pretrained: True
+  width: 640
+  height: 360
+  mask_width: 640
+  mask_height: 360
+  orig_width: 580
+  orig_height: 420
+  summarysteps: 2
+  flip: True
+  zoom_in: 0.5
+  zoom_out: 0.5
+  color_img: True
+  gray_mask: True
+#  filters:
+#    - 'cv2.Canny': [100,200]
+#    - 'protoseg.filters.canny.addcanny': [100,200]
+#   - 'protoseg.filters.sobel.sobel': [1,0,5]
+#    - 'protoseg.filters.sobel.sobel': [0,1]
+#    - 'protoseg.filters.laplacian.laplacian': []
+#    - 'protoseg.filters.laplacian.addlaplacian': []
+#    - 'protoseg.filters.morphological.erosion': [5,5,1]
+#    - 'protoseg.filters.morphological.dilation': [5,5,2]
+#    - 'protoseg.filters.morphological.opening': [5,5,1]
+  metrices:
+    - 'pixel_accuracy': 'protoseg.metrices.accuracy.pixel_accuracy'
+    - 'dice': 'protoseg.metrices.dice.dice'
+    - 'iou': 'protoseg.metrices.iou.iou'
