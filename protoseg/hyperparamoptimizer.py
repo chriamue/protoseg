@@ -29,7 +29,7 @@ class HyperParamOptimizer():
         start = timer()
         self.trainer.train(self.epochs)
         train_time = timer() - start
-        return {'loss': self.trainer.loss, 'train_time': train_time, 'status': STATUS_OK}
+        return {'loss': self.trainer.loss, 'params': params, 'train_time': train_time, 'status': STATUS_OK}
 
     def after_epoch(self):
         pass

@@ -2,6 +2,8 @@
 import os
 import numpy as np
 import cv2
+import json
+import pandas as pd
 import tensorflow as tf
 from tensorboard.backend.event_processing import event_accumulator as ea
 
@@ -75,3 +77,9 @@ class Report():
             pp.savefig(fig)
             cv2.imwrite(resultpath+'/loss.png', img)
         pp.close()
+
+    def hyperparamopt(self, hyperparamoptimizer, resultpath):
+        filename = os.path.join(resultpath, 'trials.csv')
+        df = pd.DataFrame(data=hyperparamoptimizer.trials.results)
+        df = df.set_index('loss')
+        df.to_csv(filename)

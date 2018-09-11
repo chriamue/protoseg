@@ -26,6 +26,8 @@ if __name__ == "__main__":
     configs = Config(sys.argv[1])
     if len(sys.argv) > 2:
         max_evals = int(sys.argv[2])
+
+    report = Report(configs, resultspath)
     for run in configs:
         print("Run: ", run)
         resultpath = os.path.join(resultspath, run)
@@ -37,7 +39,7 @@ if __name__ == "__main__":
         # set backend
         backends.set_backend(config['backend'])
         # Load Model
-        modelfile = os.path.join('results/', run, 'model.checkpoint')
+        modelfile = os.path.join(resultpath, 'model.checkpoint')
         model = Model(config, modelfile)
         # augmentation
         augmentation = Augmentation(config=config)
@@ -48,6 +50,9 @@ if __name__ == "__main__":
         best = hyperoptimizer(max_evals)
         print(config)
         print(best)
+
+
+        report.hyperparamopt(hyperoptimizer, resultpath)
 
     
     sys.exit(0)

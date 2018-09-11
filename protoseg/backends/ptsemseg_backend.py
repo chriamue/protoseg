@@ -125,6 +125,7 @@ class ptsemseg_backend(AbstractBackend):
 
             loss.backward()
             trainer.optimizer.step()
+            trainer.loss += loss.item()
 
             if trainer.global_step % summarysteps == 0:
                 print('{0:.4f} --- loss: {1:.6f}'.format(trainer.global_step *
