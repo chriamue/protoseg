@@ -33,3 +33,6 @@ run1_shipdetection:
     - 'pixel_accuracy': 'protoseg.metrices.accuracy.pixel_accuracy'
     - 'dice': 'protoseg.metrices.dice.dice'
     - 'iou': 'protoseg.metrices.iou.iou'
+  hyperparamopt:
+    - flip: [True, False]
+    - filters: [['protoseg.filters.canny.addcanny': [100,200]],['protoseg.filters.morphological.opening': [5,5,1]]]

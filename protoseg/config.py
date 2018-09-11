@@ -20,7 +20,8 @@ class Config():
                'noise_amount': 0, 'noise_chance': 0,
                'min_val': 0, 'max_val': 255,  # pixel values
                'min_bright': -20, 'max_bright': +30,  # brightness
-               'zoom_in': 0, 'zoom_out': 0  # zoom
+               'zoom_in': 0, 'zoom_out': 0,  # zoom
+               'hyperparamopt': []
                }
 
     def __init__(self, configs={}):
