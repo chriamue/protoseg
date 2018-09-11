@@ -132,14 +132,14 @@ class ptsemseg_backend(AbstractBackend):
                                                          batch_size / len(trainer.dataloader), loss.item()))
                 if trainer.summarywriter:
                     trainer.summarywriter.add_scalar(
-                        'loss', loss.item(), global_step=trainer.global_step)
+                        trainer.name+'loss', loss.item(), global_step=trainer.global_step)
                     trainer.summarywriter.add_image(
-                        'image', images[0], global_step=trainer.global_step)
+                        trainer.name+'image', images[0], global_step=trainer.global_step)
                     trainer.summarywriter.add_image(
-                        'mask', labels[0], global_step=trainer.global_step)
+                        trainer.name+'mask', labels[0], global_step=trainer.global_step)
                     pred = outputs.data.max(1)[1].cpu().numpy()
                     trainer.summarywriter.add_image(
-                        'predicted', pred[0], global_step=trainer.global_step)
+                        trainer.name+'predicted', pred[0], global_step=trainer.global_step)
                     if not self.graph_exported:
                         try:
                             trainer.summarywriter.add_graph(
@@ -155,14 +155,14 @@ class ptsemseg_backend(AbstractBackend):
         )
         for i, (X_batch, y_batch) in enumerate(dataloader):
             prediction = self.batch_predict(trainer, X_batch)
-            trainer.metric(prediction[0], y_batch[0].numpy())
+            trainer.metric(prediction[0], y_batch[0].numpy(), prefix=trainer.name)
             if trainer.summarywriter:
                 trainer.summarywriter.add_image(
-                    "val_image", (X_batch[0]/255.0), global_step=trainer.epoch)
+                    trainer.name+"val_image", (X_batch[0]/255.0), global_step=trainer.epoch)
                 trainer.summarywriter.add_image(
-                    "val_mask", (y_batch[0]), global_step=trainer.epoch)
+                    trainer.name+"val_mask", (y_batch[0]), global_step=trainer.epoch)
                 trainer.summarywriter.add_image(
-                    "val_predicted", (prediction[0]), global_step=trainer.epoch)
+                    trainer.name+"val_predicted", (prediction[0]), global_step=trainer.epoch)
 
     def get_summary_writer(self, logdir='results/'):
         return SummaryWriter(log_dir=logdir)

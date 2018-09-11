@@ -11,6 +11,7 @@ class HyperParamOptimizer():
         'batch_size': hp.choice('batch_size', list(range(1, 3)))
     }
     epochs = 2
+    trial = 0
 
     def __init__(self, trainer):
         self.trainer = trainer
@@ -22,19 +23,22 @@ class HyperParamOptimizer():
                 self.space[key] = hp.choice(key, config[key])
 
     def objective(self, params):
+        self.trial += 1
         self.trainer.model.load()
         self.trainer.init()
+        self.trainer.name = "trial{}_".format(self.trial)
         for param in params:
             self.trainer.config[param] = params[param]
         start = timer()
         self.trainer.train(self.epochs)
         train_time = timer() - start
-        return {'loss': self.trainer.loss, 'params': params, 'train_time': train_time, 'status': STATUS_OK}
+        return {'loss': self.trainer.loss, 'trial': self.trial, 'params': params, 'train_time': train_time, 'status': STATUS_OK}
 
     def after_epoch(self):
         pass
 
     def __call__(self, max_evals = 10):
+        self.trial = 0
         self.after_epoch_callback = self.trainer.after_epoch_callback
 
         self.trainer.after_epoch_callback = self.after_epoch
@@ -42,4 +46,5 @@ class HyperParamOptimizer():
                     max_evals=max_evals, trials=self.trials)
         best_params = space_eval(self.space, best)
         self.trainer.after_epoch_callback = self.after_epoch_callback
+        self.trainer.name = ''
         return best_params

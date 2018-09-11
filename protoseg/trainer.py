@@ -6,6 +6,7 @@ from . import backends
 
 class Trainer():
 
+    name = ''
     epoch = 0
     global_step = 0
     loss = 0.0

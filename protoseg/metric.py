@@ -23,7 +23,7 @@ class Metric():
                 self.metrices.append(
                     {'name': name, 'function': met})
 
-    def __call__(self, prediction, label):
+    def __call__(self, prediction, label, prefix = ''):
         self.global_step += 1
         for m in self.metrices:
             name = m['name']
@@ -31,4 +31,4 @@ class Metric():
             print(name, "{0:.6f}".format(value))
             if self.summarywriter:
                 self.summarywriter.add_scalar(
-                    name, value, global_step=self.global_step)
+                    prefix + name, value, global_step=self.global_step)

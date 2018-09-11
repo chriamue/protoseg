@@ -38,6 +38,8 @@ if __name__ == "__main__":
         config = configs.get()
         # set backend
         backends.set_backend(config['backend'])
+        # summary
+        summarywriter = backends.backend().get_summary_writer(logdir=resultpath)
         # Load Model
         modelfile = os.path.join(resultpath, 'model.checkpoint')
         model = Model(config, modelfile)
@@ -45,7 +47,9 @@ if __name__ == "__main__":
         augmentation = Augmentation(config=config)
         # data loader
         dataloader = DataLoader(config=config, mode='train', augmentation=augmentation)
-        trainer = Trainer(config, model, dataloader)
+        # validation data loader
+        valdataloader = DataLoader(config=config, mode='val')
+        trainer = Trainer(config, model, dataloader, valdataloader=valdataloader, summarywriter=summarywriter)
         hyperoptimizer = HyperParamOptimizer(trainer)
         best = hyperoptimizer(max_evals)
         print(config)

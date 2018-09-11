@@ -88,16 +88,16 @@ class gluoncv_backend(AbstractBackend):
                 print(trainer.global_step, i, 'loss:', trainer.loss / (i+1))
                 if trainer.summarywriter:
                     trainer.summarywriter.add_scalar(
-                        tag='loss', value=losses[0].asnumpy()[0], global_step=trainer.global_step)
+                        tag=trainer.name+'loss', value=losses[0].asnumpy()[0], global_step=trainer.global_step)
                     trainer.summarywriter.add_image(
-                        "image", (X_batch[0]/255.0), global_step=trainer.global_step)
+                        trainer.name+"image", (X_batch[0]/255.0), global_step=trainer.global_step)
                     trainer.summarywriter.add_image(
-                        "mask", (y_batch[0]), global_step=trainer.global_step)
+                        trainer.name+"mask", (y_batch[0]), global_step=trainer.global_step)
                     output, _ = outputs[0]
                     predict = mxnet.nd.squeeze(
                         mxnet.nd.argmax(output, 1)).asnumpy().clip(0, 1)
                     trainer.summarywriter.add_image(
-                        "predicted", (predict), global_step=trainer.global_step)
+                        trainer.name+"predicted", (predict), global_step=trainer.global_step)
 
     def validate_epoch(self, trainer):
         batch_size = trainer.config['batch_size']
@@ -105,14 +105,14 @@ class gluoncv_backend(AbstractBackend):
             dataset=trainer.valdataloader, batch_size=batch_size, last_batch='rollover', num_workers=batch_size)
         for i, (X_batch, y_batch) in enumerate(dataloader):
             prediction = self.batch_predict(trainer, X_batch)
-            trainer.metric(prediction[0], y_batch[0].asnumpy())
+            trainer.metric(prediction[0], y_batch[0].asnumpy(), prefix=trainer.name)
             if trainer.summarywriter:
                 trainer.summarywriter.add_image(
-                    "val_image", (X_batch[0]/255.0), global_step=trainer.epoch)
+                    trainer.name+"val_image", (X_batch[0]/255.0), global_step=trainer.epoch)
                 trainer.summarywriter.add_image(
-                    "val_mask", (y_batch[0]), global_step=trainer.epoch)
+                    trainer.name+"val_mask", (y_batch[0]), global_step=trainer.epoch)
                 trainer.summarywriter.add_image(
-                    "val_predicted", (prediction), global_step=trainer.epoch)
+                    trainer.name+"val_predicted", (prediction), global_step=trainer.epoch)
 
     def get_summary_writer(self, logdir='results/'):
         return SummaryWriter(logdir=logdir)
