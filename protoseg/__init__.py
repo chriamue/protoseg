@@ -5,6 +5,7 @@ from . import backends
 from .augmentation import Augmentation
 from .config import Config
 from .dataloader import DataLoader
+from .hyperparamoptimizer import HyperParamOptimizer
 from .metric import Metric
 from .model import Model
 from .predictor import Predictor

@@ -129,22 +129,23 @@ class ptsemseg_backend(AbstractBackend):
             if trainer.global_step % summarysteps == 0:
                 print('{0:.4f} --- loss: {1:.6f}'.format(trainer.global_step *
                                                          batch_size / len(trainer.dataloader), loss.item()))
-                trainer.summarywriter.add_scalar(
-                    'loss', loss.item(), global_step=trainer.global_step)
-                trainer.summarywriter.add_image(
-                    'image', images[0], global_step=trainer.global_step)
-                trainer.summarywriter.add_image(
-                    'mask', labels[0], global_step=trainer.global_step)
-                pred = outputs.data.max(1)[1].cpu().numpy()
-                trainer.summarywriter.add_image(
-                    'predicted', pred[0], global_step=trainer.global_step)
-                if not self.graph_exported:
-                    try:
-                        trainer.summarywriter.add_graph(
-                            trainer.model.model, images)
-                        self.graph_exported = True
-                    except Exception as e:
-                        print(e)
+                if trainer.summarywriter:
+                    trainer.summarywriter.add_scalar(
+                        'loss', loss.item(), global_step=trainer.global_step)
+                    trainer.summarywriter.add_image(
+                        'image', images[0], global_step=trainer.global_step)
+                    trainer.summarywriter.add_image(
+                        'mask', labels[0], global_step=trainer.global_step)
+                    pred = outputs.data.max(1)[1].cpu().numpy()
+                    trainer.summarywriter.add_image(
+                        'predicted', pred[0], global_step=trainer.global_step)
+                    if not self.graph_exported:
+                        try:
+                            trainer.summarywriter.add_graph(
+                                trainer.model.model, images)
+                            self.graph_exported = True
+                        except Exception as e:
+                            print(e)
 
     def validate_epoch(self, trainer):
         batch_size = trainer.config['batch_size']
@@ -154,12 +155,13 @@ class ptsemseg_backend(AbstractBackend):
         for i, (X_batch, y_batch) in enumerate(dataloader):
             prediction = self.batch_predict(trainer, X_batch)
             trainer.metric(prediction[0], y_batch[0].numpy())
-            trainer.summarywriter.add_image(
-                "val_image", (X_batch[0]/255.0), global_step=trainer.epoch)
-            trainer.summarywriter.add_image(
-                "val_mask", (y_batch[0]), global_step=trainer.epoch)
-            trainer.summarywriter.add_image(
-                "val_predicted", (prediction[0]), global_step=trainer.epoch)
+            if trainer.summarywriter:
+                trainer.summarywriter.add_image(
+                    "val_image", (X_batch[0]/255.0), global_step=trainer.epoch)
+                trainer.summarywriter.add_image(
+                    "val_mask", (y_batch[0]), global_step=trainer.epoch)
+                trainer.summarywriter.add_image(
+                    "val_predicted", (prediction[0]), global_step=trainer.epoch)
 
     def get_summary_writer(self, logdir='results/'):
         return SummaryWriter(log_dir=logdir)

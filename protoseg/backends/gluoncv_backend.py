@@ -106,12 +106,13 @@ class gluoncv_backend(AbstractBackend):
         for i, (X_batch, y_batch) in enumerate(dataloader):
             prediction = self.batch_predict(trainer, X_batch)
             trainer.metric(prediction[0], y_batch[0].asnumpy())
-            trainer.summarywriter.add_image(
-                "val_image", (X_batch[0]/255.0), global_step=trainer.epoch)
-            trainer.summarywriter.add_image(
-                "val_mask", (y_batch[0]), global_step=trainer.epoch)
-            trainer.summarywriter.add_image(
-                "val_predicted", (prediction), global_step=trainer.epoch)
+            if trainer.summarywriter:
+                trainer.summarywriter.add_image(
+                    "val_image", (X_batch[0]/255.0), global_step=trainer.epoch)
+                trainer.summarywriter.add_image(
+                    "val_mask", (y_batch[0]), global_step=trainer.epoch)
+                trainer.summarywriter.add_image(
+                    "val_predicted", (prediction), global_step=trainer.epoch)
 
     def get_summary_writer(self, logdir='results/'):
         return SummaryWriter(logdir=logdir)

@@ -9,6 +9,7 @@ class Trainer():
     epoch = 0
     global_step = 0
     loss = 0.0
+    summarywriter = None
 
     
     def before_epoch(self):
@@ -35,6 +36,9 @@ class Trainer():
         assert(model)
         assert(dataloader)
         self.metric = Metric(self.config, self.summarywriter)
+        self.init()
+
+    def init(self):
         backends.backend().init_trainer(self)
 
     def print_config(self):
@@ -42,10 +46,10 @@ class Trainer():
         print('Learning rate:', self.config['learn_rate'])
         print('Batch size:', self.config['batch_size'])
 
-    def train(self):
+    def train(self, epochs = None):
         self.global_step = 0
         self.print_config()
-        for epoch in range(self.config['epochs']):
+        for epoch in range(epochs or self.config['epochs']):
             self.epoch = epoch
             if self.before_epoch_callback:
                 self.before_epoch_callback()
