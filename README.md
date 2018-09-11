@@ -58,6 +58,29 @@ ptsemseg_segnet:
 
 A report as PDF file of the results can be created.
 
+## Hyperparameteropt
+
+Hyperparameter trains multiple times with multiple configurations and tries to find
+
+hyperparameters which produce the best loss.
+
+Learnrate will be variated by default, but every other parameter in the config file can
+
+be variated too.
+
+An example configuration looks like:
+
+```yml
+ptsemseg_segnet:
+  flit: False
+  filters:
+    - 'cv2.Canny': [100,200]
+  hyperparamopt:
+    - flip: [True, False]
+    - filters: [['protoseg.filters.canny.addcanny': [100,200]],['protoseg.filters.morphological.opening': [5,5,1]]]
+```
+
+
 ## Kaggle Competition Data
 
 In folder ./scripts is ultrasound-nerve-segmentation.py which should be run as
