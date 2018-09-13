@@ -9,6 +9,7 @@ from . import backends
 
 class DataLoader():
 
+    current = 0
     images = []
     masks = []
 
@@ -53,7 +54,8 @@ class DataLoader():
         return img
 
     def resize(self, img, mask=None, width=None, height=None):
-        img = cv2.resize(img, (width or self.config['width'], height or self.config['height']))
+        img = cv2.resize(
+            img, (width or self.config['width'], height or self.config['height']))
         if mask is None:
             return img
         if self.config.get('mask_width'):
@@ -72,7 +74,7 @@ class DataLoader():
             img = cv2.imread(self.images[index], cv2.IMREAD_COLOR)
         else:
             img = cv2.imread(self.images[index], cv2.IMREAD_UNCHANGED)
-        
+
         img = self.filter(img)
 
         if self.mode == 'test':
@@ -93,10 +95,36 @@ class DataLoader():
             img, mask = self.augmentation.random_zoom(img, mask)
             img = self.augmentation.random_noise(img)
             img = self.augmentation.random_brightness(img)
-        
+
         img, mask = self.resize(img, mask)
 
         return backends.backend().dataloader_format(img, mask)
 
     def __len__(self):
         return len(self.images)
+
+    def generator(self):
+        index = 0
+        while index < len(self):
+            img, mask = self[index]
+            yield img, mask
+            index += 1
+
+    def batch_generator(self, batch_size=1):
+        index = 0
+        while index < len(self):
+            img_batch = []
+            mask_batch = []
+            for i in range(batch_size):
+                img, mask = self[i]
+                img_batch.append(img)
+                mask_batch.append(mask)
+            yield img_batch, mask_batch
+            index += batch_size
+
+    def next(self):
+        img, mask = self[self.current]
+        self.current += 1
+        if self.current >= len(self):
+            self.current = 0
+        return img, mask
