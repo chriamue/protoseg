@@ -10,7 +10,6 @@ from protoseg import Model
 from protoseg import Trainer
 from protoseg import Report
 from protoseg import backends
-from PSPNet.pspnet_backend import pspnet_backend
 
 resultspath = 'results/'
 
@@ -22,7 +21,6 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         print(help())
         sys.exit(1)
-    backends.register_backend('pspnet_backend', pspnet_backend)
     configs = Config(sys.argv[1])    
     for run in configs:
         print("Run: ", run)
