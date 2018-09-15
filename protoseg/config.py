@@ -9,6 +9,7 @@ class Config():
     default = {'datapath': 'data/',
                'backend': 'gluoncv_backend', 'backbone': 'resnet50',
                'batch_size': 1, 'learn_rate': 1.0, 'epochs': 1,  # hyperparameter
+               'optimizer': 'sgd',
                'pretrained': False, 'summarysteps': 100, 'classes': 1,
                'width': 480, 'height': 480,
                'orig_width': 512, 'orig_height': 512,

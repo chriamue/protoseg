@@ -46,7 +46,10 @@ class gluoncv_backend(AbstractBackend):
         trainer.loss_function = DataParallelCriterion(
             trainer.loss_function, self.ctx_list)
         kv = mxnet.kv.create('local')
-        trainer.optimizer = gluon.Trainer(trainer.model.model.module.collect_params(), 'sgd',
+        optimizer = trainer.config['optimizer']
+        if not optimizer in ['sgd']:
+            optimizer = 'sgd'
+        trainer.optimizer = gluon.Trainer(trainer.model.model.module.collect_params(), optimizer,
                                           {'lr_scheduler': trainer.lr_scheduler,
                                               'wd': 0.0001,
                                               'momentum': 0.9,
@@ -85,7 +88,7 @@ class gluoncv_backend(AbstractBackend):
             for loss in losses:
                 trainer.loss += loss.asnumpy()[0]
             if i % summarysteps == 0:
-                print(trainer.global_step, i, 'loss:', trainer.loss / (i+1))
+                print(trainer.global_step, i, 'loss:', losses[0].asnumpy()[0])
                 if trainer.summarywriter:
                     trainer.summarywriter.add_scalar(
                         tag=trainer.name+'loss', value=losses[0].asnumpy()[0], global_step=trainer.global_step)
@@ -105,7 +108,8 @@ class gluoncv_backend(AbstractBackend):
             dataset=trainer.valdataloader, batch_size=batch_size, last_batch='rollover', num_workers=batch_size)
         for i, (X_batch, y_batch) in enumerate(dataloader):
             prediction = self.batch_predict(trainer, X_batch)
-            trainer.metric(prediction[0], y_batch[0].asnumpy(), prefix=trainer.name)
+            trainer.metric(
+                prediction[0], y_batch[0].asnumpy(), prefix=trainer.name)
             if trainer.summarywriter:
                 trainer.summarywriter.add_image(
                     trainer.name+"val_image", (X_batch[0]/255.0), global_step=trainer.epoch)

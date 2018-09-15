@@ -70,16 +70,35 @@ class ptsemseg_backend(AbstractBackend):
             print(e)
         m.to(self.device)
 
+    def get_optimizer(self, name, parameters, config):
+        optimizer = None
+        if name == 'sgd':
+            optimizer = torch.optim.SGD(parameters,
+                                        lr=config['learn_rate'])
+        elif name == 'adadelta':
+            optimizer = torch.optim.Adadelta(parameters,
+                                             lr=config['learn_rate'])
+        elif name == 'adagrad':
+            optimizer = torch.optim.Adagrad(
+                parameters, lr=config['learn_rate'])
+        elif name == 'adam':
+            optimizer = torch.optim.Adam(parameters, lr=config['learn_rate'])
+        elif name == 'rmsprop':
+            optimizer = torch.optim.RMSprop(
+                parameters, lr=config['learn_rate'])
+        else:
+            optimizer = torch.optim.SGD(parameters,
+                                        lr=config['learn_rate'])
+        return optimizer
+
     def init_trainer(self, trainer):
         if hasattr(trainer.model.model.module, "optimizer"):
             print("Using custom optimizer")
             optimizer = trainer.model.model.module.optimizer(
                 trainer.model.model.model.parameters())
         else:
-            trainer.optimizer = torch.optim.SGD(trainer.model.model.parameters(),
-                                                lr=trainer.config['learn_rate'],
-                                                momentum=0.9,
-                                                weight_decay=0.0005)
+            trainer.optimizer = self.get_optimizer(trainer.config['optimizer'], trainer.model.model.parameters(),
+                                                   config=trainer.config)
 
         if hasattr(trainer.model.model.module, "loss"):
             print("Using custom loss")
@@ -155,7 +174,8 @@ class ptsemseg_backend(AbstractBackend):
         )
         for i, (X_batch, y_batch) in enumerate(dataloader):
             prediction = self.batch_predict(trainer, X_batch)
-            trainer.metric(prediction[0], y_batch[0].numpy(), prefix=trainer.name)
+            trainer.metric(
+                prediction[0], y_batch[0].numpy(), prefix=trainer.name)
             if trainer.summarywriter:
                 trainer.summarywriter.add_image(
                     trainer.name+"val_image", (X_batch[0]/255.0), global_step=trainer.epoch)
