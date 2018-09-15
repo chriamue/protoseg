@@ -23,6 +23,7 @@ class Config():
                'min_val': 0, 'max_val': 255,  # pixel values
                'min_bright': -20, 'max_bright': +30,  # brightness
                'zoom_in': 0, 'zoom_out': 0,  # zoom
+               'img_augmentation': [],'shape_augmentation': [], 'filters': [],
                'hyperparamopt': []
                }
 

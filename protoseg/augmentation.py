@@ -2,13 +2,32 @@
 from random import randint, randrange, uniform
 import numpy as np
 import cv2
+import imgaug as ia
+from imgaug import augmenters as iaa
+
 
 class Augmentation():
+
+    img_augmenters = []
+    shape_augmenters = []
+    img_seq = None
+    shape_seq = None
+    seed = 1
 
     def __init__(self, config):
         self.config = config
         assert(config)
-        
+        for aug in self.config['img_augmentation']:
+            name = list(aug.keys())[0]
+            parameters = aug[name]
+            augmenter = getattr(iaa, name)(**parameters)
+            self.img_augmenters.append(augmenter)
+
+        for aug in self.config['shape_augmentation']:
+            name = list(aug.keys())[0]
+            parameters = aug[name]
+            augmenter = getattr(iaa, name)(**parameters)
+            self.shape_augmenters.append(augmenter)
 
     def random_flip(self, img, mask=None):
         """Apply random flip to single image and label."""
@@ -211,3 +230,24 @@ class Augmentation():
             print("Failed random_zooms ? %s", mask.shape)
 
         return img, mask
+
+    def img_augmentation(self, img):
+        ia.seed(self.seed)
+        self.seed += 1
+        augmenters = []
+        for augmenter in self.img_augmenters:
+            augmenters.append(iaa.Sometimes(0.5, augmenter))
+        self.img_seq = iaa.Sequential(augmenters)
+        images_aug = self.img_seq.augment_images([img])
+        return images_aug[0]
+
+    def shape_augmentation(self, img, mask):
+        ia.seed(self.seed)
+        self.seed += 1
+        augmenters = []
+        for augmenter in self.shape_augmenters:
+            augmenters.append(iaa.Sometimes(0.5, augmenter))
+        self.shape_seq = iaa.Sequential(augmenters).to_deterministic()
+        imgs_aug = self.shape_seq.augment_images([img])
+        masks_aug = self.shape_seq.augment_images([mask])
+        return imgs_aug[0], masks_aug[0]

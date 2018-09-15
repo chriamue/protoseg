@@ -1,7 +1,7 @@
 run1_gluoncv:
   backend: gluoncv_backend
   backbone: resnet50
-  datapath: ~/.kaggle/competitions/airbus-ship-detection/smalldataset
+  datapath: ~/.kaggle/competitions/ultrasound-nerve-segmentation/smalldataset
   epochs: 10
   batch_size: 2
   optimizer: adam
@@ -13,11 +13,23 @@ run1_gluoncv:
   orig_width: 580
   orig_height: 420
   summarysteps: 1
-  flip: True
-  zoom_in: 0.5
-  zoom_out: 0.5
   color_img: True
   gray_mask: True
+  shape_augmentation:
+    - Affine:
+        rotate: -15
+    - Affine:
+        rotate: 30
+    - Affine:
+        scale: [0.8, 2.5]
+    - Fliplr:
+        p: 1.0
+
+  img_augmentation:
+    - GaussianBlur:
+        sigma: [0, 0.5]
+    - AdditiveGaussianNoise:
+        scale: 50
   filters:
 #    - 'cv2.Canny': [100,200]
 #    - 'protoseg.filters.canny.addcanny': [100,200]

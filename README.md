@@ -2,6 +2,18 @@
 
 Prototyped Segmentation
 
+## Install
+
+The following package must be installed
+
+* pip install git+https://github.com/chriamue/pytorch-semseg
+
+then protoseg can be installed
+
+```bash
+pip install git+https://github.com/chriamue/protoseg
+```
+
 ## Workflow
 
 ![workflow diagram](http://www.plantuml.com/plantuml/proxy?src=https://raw.github.com/chriamue/protoseg/master/res/workflow.puml)
@@ -52,6 +64,41 @@ ptsemseg_segnet:
   classes: 2
   width: 512
   height: 512
+```
+
+## Augmentation
+
+There are several options for augmentation.
+You can find a full list of augmentators in the docs of
+[imgaug](https://imgaug.readthedocs.io/en/latest/source/augmenters.html#).
+Each augmentator will be executed with probability 0.5 .
+
+### Shape
+
+Shape augmentation will be executed on image and mask.
+
+```yml
+  shape_augmentation:
+    - Affine:
+        rotate: -15
+    - Affine:
+        rotate: 30
+    - Affine:
+        scale: [0.8, 2.5]
+    - Fliplr:
+        p: 1.0
+```
+
+### Image
+
+Image augmentation will be executed only on the image.
+
+```yml
+  img_augmentation:
+    - GaussianBlur:
+        sigma: [0, 0.5]
+    - AdditiveGaussianNoise:
+        scale: 50
 ```
 
 ## Report

@@ -101,8 +101,8 @@ class gluoncv_backend(AbstractBackend):
                     trainer.summarywriter.add_image(
                         trainer.name+"mask", (y_batch[0]), global_step=trainer.global_step)
                     output, _ = outputs[0]
-                    predict = mxnet.nd.squeeze(
-                        mxnet.nd.argmax(output, 1)).asnumpy().clip(0, 1)
+                    predict = mxnet.nd.argmax(
+                        output, 1).asnumpy().clip(0, 1)[0]
                     trainer.summarywriter.add_image(
                         trainer.name+"predicted", (predict), global_step=trainer.global_step)
 
@@ -120,7 +120,7 @@ class gluoncv_backend(AbstractBackend):
                 trainer.summarywriter.add_image(
                     trainer.name+"val_mask", (y_batch[0]), global_step=trainer.epoch)
                 trainer.summarywriter.add_image(
-                    trainer.name+"val_predicted", (prediction), global_step=trainer.epoch)
+                    trainer.name+"val_predicted", (prediction[0]), global_step=trainer.epoch)
 
     def get_summary_writer(self, logdir='results/'):
         return SummaryWriter(logdir=logdir)
@@ -139,4 +139,4 @@ class gluoncv_backend(AbstractBackend):
             outputs = model(img_batch.as_in_context(self.ctx))
             output, _ = outputs
         predict = mxnet.nd.argmax(output, 1).asnumpy().clip(0, 1)
-        return predict.astype(np.float32)
+        return predict

@@ -93,8 +93,11 @@ class DataLoader():
             img, mask = self.augmentation.random_rotation(img, mask)
             img, mask = self.augmentation.random_shift(img, mask)
             img, mask = self.augmentation.random_zoom(img, mask)
+            img, mask = self.augmentation.shape_augmentation(img, mask)
             img = self.augmentation.random_noise(img)
             img = self.augmentation.random_brightness(img)
+
+            img = self.augmentation.img_augmentation(img)
 
         img, mask = self.resize(img, mask)
 
