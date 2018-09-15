@@ -1,12 +1,11 @@
 run1_gluoncv:
   backend: gluoncv_backend
   backbone: resnet50
+  datapath: ~/.kaggle/competitions/airbus-ship-detection/smalldataset
   epochs: 10
   batch_size: 2
   optimizer: adam
   loss_function: SoftmaxCrossEntropyLossWithAux
-  #loss_function_parameters:
-  #  aux: False
   learn_rate: 0.001
   pretrained: True
   width: 480

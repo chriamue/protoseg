@@ -58,6 +58,21 @@ ptsemseg_segnet:
 
 A report as PDF file of the results can be created.
 
+Running
+
+```bash
+python3 train.py configs/ptsemseg_segnet.yml
+```
+
+produces following images and [pdf report](results/ptsemseg_segnet.yml.pdf) file after training.
+
+<img src="results/ptsemseg_segnet/loss.png" alt="loss" width="320"/>
+<img src="results/ptsemseg_segnet/dice.png" alt="dice" width="320"/>
+<img src="results/ptsemseg_segnet/iou.png" alt="iou" width="320"/>
+<img src="results/ptsemseg_segnet/jaccard.png" alt="jaccard" width="320"/>
+<img src="results/ptsemseg_segnet/mean_accuracy.png" alt="mean accuracy" width="320"/>
+<img src="results/ptsemseg_segnet/pixel_accuracy.png" alt="pixel accuracy" width="320"/>
+
 ## Hyperparameteropt
 
 Hyperparameter trains multiple times with multiple configurations and tries to find
@@ -79,7 +94,6 @@ ptsemseg_segnet:
     - flip: [True, False]
     - filters: [['protoseg.filters.canny.addcanny': [100,200]],['protoseg.filters.morphological.opening': [5,5,1]]]
 ```
-
 
 ## Kaggle Competition Data
 

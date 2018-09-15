@@ -1,0 +1,24 @@
+ptsemseg_segnet:
+  datapath: ~/.kaggle/competitions/airbus-ship-detection/smalldataset
+  backend: ptsemseg_backend
+  backbone: segnet
+  classes: 2
+  epochs: 10
+  batch_size: 2
+  learn_rate: 0.001
+  pretrained: True
+  width: 512
+  height: 512
+  orig_width: 580
+  orig_height: 420
+  summarysteps: 20
+  color_img: True
+  gray_mask: True
+#  filters:
+#    - 'protoseg.filters.morphological.erosion': [5,5,1]
+  metrices:
+    - 'pixel_accuracy': 'protoseg.metrices.accuracy.pixel_accuracy'
+    - 'mean_accuracy': 'protoseg.metrices.accuracy.mean_accuracy'
+    - 'dice': 'protoseg.metrices.dice.dice'
+    - 'jaccard': 'protoseg.metrices.jaccard.jaccard'
+    - 'iou': 'protoseg.metrices.iou.iou'
