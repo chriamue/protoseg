@@ -38,7 +38,11 @@ class gluoncv_backend(AbstractBackend):
         print('saved model to:', model.modelfile)
 
     def init_trainer(self, trainer):
-        trainer.loss_function = SoftmaxCrossEntropyLossWithAux(aux=True)
+        if trainer.config['loss_function'] == 'default':
+            trainer.loss_function = SoftmaxCrossEntropyLossWithAux(aux=True)
+        else:
+            trainer.loss_function = getattr(gluoncv.loss, trainer.config['loss_function'])(
+                **trainer.config['loss_function_parameters'])
         trainer.lr_scheduler = gluoncv.utils.LRScheduler(mode='poly', baselr=trainer.config['learn_rate'], niters=len(trainer.dataloader),
                                                          nepochs=50)
         trainer.model.model = DataParallelModel(
