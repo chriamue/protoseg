@@ -24,12 +24,9 @@ class Report():
         assert(configs)
 
     # source: https://github.com/JamesChuanggg/Tensorboard2Seaborn/blob/master/beautify.py
-    def plot(self, log_path, tag='loss', smooth_space=100, color_code='#4169E1'):
+    def plot(self, acc, tag='loss', smooth_space=100, color_code='#4169E1'):
         ''' beautify tf log
             Use better library (seaborn) to plot tf event file'''
-
-        acc = ea.EventAccumulator(log_path)
-        acc.Reload()
 
         # only support scalar now
         scalar_list = acc.Tags()['scalars']
@@ -67,9 +64,7 @@ class Report():
         fig.canvas.draw()
         return fig, np.array(fig.canvas.renderer._renderer)
 
-    def image(self, log_path, tag='loss'):
-        acc = ea.EventAccumulator(log_path)
-        acc.Reload()
+    def image(self, acc, tag='loss'):
         image_list = acc.Images(tag = tag)
         with tf.Session() as sess:
             img = tf.image.decode_image(image_list[-1].encoded_image_string)
@@ -81,14 +76,16 @@ class Report():
         pp = PdfPages(os.path.join(self.resultspath, os.path.basename(self.configs.filename) + '.pdf'))
         for run in self.configs:
             resultpath = os.path.join(self.resultspath, run)
-            fig, img = self.plot(resultpath, tag="loss")
+            event_acc = ea.EventAccumulator(resultpath)
+            event_acc.Reload()
+            fig, img = self.plot(event_acc, tag="loss")
             plt.text(0.05,0.95,run, transform=fig.transFigure, size=24)
             pp.savefig(fig)
             cv2.imwrite(resultpath+'/loss.png', img)
             config = self.configs.get()
             for metric in config['metrices']:
                 name = list(metric.keys())[0]
-                fig, img = self.plot(resultpath, tag=name)
+                fig, img = self.plot(event_acc, tag=name)
                 pp.savefig(fig)
                 cv2.imwrite(resultpath+'/'+name+'.png', img)
         pp.close()
@@ -99,13 +96,15 @@ class Report():
         df = df.set_index('loss')
         df.to_csv(filename)
         pp = PdfPages(os.path.join(resultpath, 'paramopt.pdf'))
+        event_acc = ea.EventAccumulator(resultpath)
+        event_acc.Reload()
         
         for result in hyperparamoptimizer.trials.results:
             trial = result['trial']
-            _, loss = self.plot(log_path = resultpath, tag='trial'+str(trial)+'_loss')
-            val_image = self.image(log_path = resultpath, tag='trial'+str(trial)+'_val_image')
-            val_mask = self.image(log_path = resultpath, tag='trial'+str(trial)+'_val_mask')
-            val_predicted = self.image(log_path = resultpath, tag='trial'+str(trial)+'_val_predicted')
+            _, loss = self.plot(event_acc, tag='trial'+str(trial)+'_loss')
+            val_image = self.image(event_acc, tag='trial'+str(trial)+'_val_image')
+            val_mask = self.image(event_acc, tag='trial'+str(trial)+'_val_mask')
+            val_predicted = self.image(event_acc, tag='trial'+str(trial)+'_val_predicted')
             fig=plt.figure()
             fig.add_subplot(2, 4, 1)
             plt.imshow(loss)
@@ -118,7 +117,7 @@ class Report():
             plt.text(0.05,0.95, 'trial ' + str(trial), transform=fig.transFigure, size=24)
             for i, m in enumerate(config['metrices']):
                 name = list(m.keys())[0]
-                _, metric = self.plot(log_path = resultpath, tag='trial'+str(trial)+'_'+name)
+                _, metric = self.plot(event_acc, tag='trial'+str(trial)+'_'+name)
                 fig.add_subplot(2, len(config['metrices']), len(config['metrices']) + i+1)
                 plt.imshow(metric)
             pp.attach_note(result['params'])
