@@ -24,7 +24,6 @@ run1_gluoncv:
         scale: [0.8, 2.5]
     - Fliplr:
         p: 1.0
-
   img_augmentation:
     - GaussianBlur:
         sigma: [0, 0.5]
@@ -37,7 +36,10 @@ run1_gluoncv:
 #    - 'protoseg.filters.sobel.sobel': [0,1]
 #    - 'protoseg.filters.laplacian.laplacian': []
 #    - 'protoseg.filters.laplacian.addlaplacian': []
-    - 'protoseg.filters.morphological.erosion': [5,5,1]
+    - 'protoseg.filters.morphological.erosion':
+        kernelw: 5
+        kernelh: 5
+        iterations: 1
 #    - 'protoseg.filters.morphological.dilation': [5,5,2]
 #    - 'protoseg.filters.morphological.opening': [5,5,1]
   metrices:

@@ -101,6 +101,23 @@ Image augmentation will be executed only on the image.
         scale: 50
 ```
 
+## Filters
+
+Filters are functions to preprocess images.
+The functions have to consume an image first and then some parameters
+and have to return the processed image.
+Parameters can be given as list or
+as dictionary.
+
+```yml
+  filters:
+    - 'cv2.Canny': [100,200]
+    - 'protoseg.filters.morphological.erosion':
+        kernelw: 5
+        kernelh: 5
+        iterations: 1
+```
+
 ## Report
 
 A report as PDF file of the results can be created.

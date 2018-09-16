@@ -50,7 +50,10 @@ class DataLoader():
 
     def filter(self, img):
         for f in self.filters:
-            img = f['function'](img, *f['parameters'])
+            if type(f['parameters']) is list:
+                img = f['function'](img, *f['parameters'])
+            else:
+                img = f['function'](img, **f['parameters'])
         return img
 
     def resize(self, img, mask=None, width=None, height=None):
