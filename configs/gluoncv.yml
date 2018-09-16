@@ -1,7 +1,7 @@
 run1_gluoncv:
   backend: gluoncv_backend
   backbone: resnet50
-  datapath: ~/.kaggle/competitions/ultrasound-nerve-segmentation/smalldataset
+  #datapath: ~/.kaggle/competitions/ultrasound-nerve-segmentation/smalldataset
   epochs: 10
   batch_size: 2
   optimizer: adam

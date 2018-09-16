@@ -67,6 +67,16 @@ class Report():
         fig.canvas.draw()
         return fig, np.array(fig.canvas.renderer._renderer)
 
+    def image(self, log_path, tag='loss'):
+        acc = ea.EventAccumulator(log_path)
+        acc.Reload()
+        image_list = acc.Images(tag = tag)
+        with tf.Session() as sess:
+            img = tf.image.decode_image(image_list[-1].encoded_image_string)
+            npimg = img.eval(session=sess)
+        return npimg
+
+
     def generate(self):
         pp = PdfPages(os.path.join(self.resultspath, os.path.basename(self.configs.filename) + '.pdf'))
         for run in self.configs:
@@ -81,11 +91,38 @@ class Report():
                 fig, img = self.plot(resultpath, tag=name)
                 pp.savefig(fig)
                 cv2.imwrite(resultpath+'/'+name+'.png', img)
-
         pp.close()
 
-    def hyperparamopt(self, hyperparamoptimizer, resultpath):
+    def hyperparamopt(self, config, hyperparamoptimizer, resultpath):
         filename = os.path.join(resultpath, 'trials.csv')
         df = pd.DataFrame(data=hyperparamoptimizer.trials.results)
         df = df.set_index('loss')
         df.to_csv(filename)
+        pp = PdfPages(os.path.join(resultpath, 'paramopt.pdf'))
+        
+        for result in hyperparamoptimizer.trials.results:
+            trial = result['trial']
+            _, loss = self.plot(log_path = resultpath, tag='trial'+str(trial)+'_loss')
+            val_image = self.image(log_path = resultpath, tag='trial'+str(trial)+'_val_image')
+            val_mask = self.image(log_path = resultpath, tag='trial'+str(trial)+'_val_mask')
+            val_predicted = self.image(log_path = resultpath, tag='trial'+str(trial)+'_val_predicted')
+            fig=plt.figure()
+            fig.add_subplot(2, 4, 1)
+            plt.imshow(loss)
+            fig.add_subplot(2, 4, 2)
+            plt.imshow(val_image)
+            fig.add_subplot(2, 4, 3)
+            plt.imshow(val_mask)
+            fig.add_subplot(2, 4, 4)
+            plt.imshow(val_predicted)
+            plt.text(0.05,0.95, 'trial ' + str(trial), transform=fig.transFigure, size=24)
+            for i, m in enumerate(config['metrices']):
+                name = list(m.keys())[0]
+                _, metric = self.plot(log_path = resultpath, tag='trial'+str(trial)+'_'+name)
+                fig.add_subplot(2, len(config['metrices']), len(config['metrices']) + i+1)
+                plt.imshow(metric)
+            pp.attach_note(result['params'])
+            pp.savefig(fig)
+        pp.close()
+
+

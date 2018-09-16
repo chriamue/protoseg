@@ -56,7 +56,7 @@ if __name__ == "__main__":
         print(best)
 
 
-        report.hyperparamopt(hyperoptimizer, resultpath)
+        report.hyperparamopt(config, hyperoptimizer, resultpath)
 
     
     sys.exit(0)
