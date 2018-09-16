@@ -172,6 +172,8 @@ ptsemseg_segnet:
     - filters: [['protoseg.filters.canny.addcanny': [100,200]],['protoseg.filters.morphological.opening': [5,5,1]]]
 ```
 
+A report will be generated as [pdf file](results/ptsemseg_segnet/paramopt.pdf).
+
 ## Kaggle Competition Data
 
 In folder ./scripts is ultrasound-nerve-segmentation.py which should be run as
