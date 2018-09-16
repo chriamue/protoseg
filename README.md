@@ -118,6 +118,19 @@ as dictionary.
         iterations: 1
 ```
 
+## Metrices
+
+There are some metrices available to measure on validation data.
+
+```yml
+  metrices:
+    - 'pixel_accuracy': 'protoseg.metrices.accuracy.pixel_accuracy'
+    - 'mean_accuracy': 'protoseg.metrices.accuracy.mean_accuracy'
+    - 'dice': 'protoseg.metrices.dice.dice'
+    - 'jaccard': 'protoseg.metrices.jaccard.jaccard'
+    - 'iou': 'protoseg.metrices.iou.iou'
+```
+
 ## Report
 
 A report as PDF file of the results can be created.
