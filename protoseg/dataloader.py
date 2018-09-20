@@ -58,7 +58,7 @@ class DataLoader():
 
     def resize(self, img, mask=None, width=None, height=None):
         img = cv2.resize(
-            img, (width or self.config['width'], height or self.config['height']))
+            img, (height or self.config['height'],width or self.config['width']))
         if mask is None:
             return img
         if self.config.get('mask_width'):
@@ -66,7 +66,7 @@ class DataLoader():
         if self.config.get('mask_height'):
             height = self.config['mask_height']
         mask = cv2.resize(
-            mask, (width or self.config['width'], height or self.config['height']), interpolation=cv2.INTER_NEAREST)
+            mask, (height or self.config['height'], width or self.config['width']), interpolation=cv2.INTER_NEAREST)
         return img, mask
 
     def __getitem__(self, index):

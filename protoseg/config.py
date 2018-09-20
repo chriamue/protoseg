@@ -8,10 +8,10 @@ class Config():
 
     default = {'datapath': 'data/',
                'backend': 'gluoncv_backend', 'backbone': 'resnet50',
-               'batch_size': 1, 'learn_rate': 1.0, 'epochs': 1,  # hyperparameter
+               'batch_size': 1, 'learn_rate': 1.0, 'epochs': 1, 'dropout': 0.5, # hyperparameter
                'optimizer': 'sgd',
                'loss_function': 'default', 'loss_function_parameters': {},
-               'pretrained': False, 'summarysteps': 100, 'classes': 1,
+               'pretrained': False, 'summarysteps': 100, 'classes': 2,
                'width': 480, 'height': 480,
                'orig_width': 512, 'orig_height': 512,
                'gray_img': False, 'gray_mask': False,
