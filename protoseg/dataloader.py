@@ -122,11 +122,11 @@ class DataLoader():
             img_batch = []
             mask_batch = []
             for i in range(batch_size):
-                img, mask = self[i]
+                img, mask = self[index + i]
                 img_batch.append(img)
                 mask_batch.append(mask)
             yield img_batch, mask_batch
-            index += batch_size
+            index = (index + batch_size)%len(self)
 
     def next(self):
         img, mask = self[self.current]
