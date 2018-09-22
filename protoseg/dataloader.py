@@ -118,7 +118,7 @@ class DataLoader():
 
     def batch_generator(self, batch_size=1):
         index = 0
-        while index < len(self):
+        while index < len(self) + batch_size:
             img_batch = []
             mask_batch = []
             for i in range(batch_size):
@@ -126,7 +126,7 @@ class DataLoader():
                 img_batch.append(img)
                 mask_batch.append(mask)
             yield img_batch, mask_batch
-            index = (index + batch_size)%len(self)
+            index = index + batch_size
 
     def next(self):
         img, mask = self[self.current]
