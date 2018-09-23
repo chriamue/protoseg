@@ -10,3 +10,4 @@ pytorch-semseg
 #git+https://github.com/chriamue/pytorch-semseg
 hyperopt
 imgaug
+tqdm

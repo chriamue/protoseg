@@ -1,9 +1,10 @@
 run1_gluoncv:
   backend: gluoncv_backend
   backbone: resnet50
-  #datapath: ~/.kaggle/competitions/ultrasound-nerve-segmentation/smalldataset
+  datapath: ~/.kaggle/competitions/ultrasound-nerve-segmentation/smalldataset
+  ignore_unlabeled: True
   epochs: 10
-  batch_size: 2
+  batch_size: 1
   optimizer: adam
   loss_function: SoftmaxCrossEntropyLossWithAux
   learn_rate: 0.001
@@ -15,20 +16,20 @@ run1_gluoncv:
   summarysteps: 1
   color_img: True
   gray_mask: True
-  shape_augmentation:
-    - Affine:
-        rotate: -15
-    - Affine:
-        rotate: 30
-    - Affine:
-        scale: [0.8, 2.5]
-    - Fliplr:
-        p: 1.0
-  img_augmentation:
-    - GaussianBlur:
-        sigma: [0, 0.5]
-    - AdditiveGaussianNoise:
-        scale: 50
+#   shape_augmentation:
+#     - Affine:
+#         rotate: -15
+#     - Affine:
+#         rotate: 30
+#     - Affine:
+#         scale: [0.8, 2.5]
+#     - Fliplr:
+#         p: 1.0
+#   img_augmentation:
+#     - GaussianBlur:
+#         sigma: [0, 0.5]
+#     - AdditiveGaussianNoise:
+#         scale: 50
   filters:
 #    - 'cv2.Canny': [100,200]
 #    - 'protoseg.filters.canny.addcanny': [100,200]
@@ -36,12 +37,20 @@ run1_gluoncv:
 #    - 'protoseg.filters.sobel.sobel': [0,1]
 #    - 'protoseg.filters.laplacian.laplacian': []
 #    - 'protoseg.filters.laplacian.addlaplacian': []
-    - 'protoseg.filters.morphological.erosion':
-        kernelw: 5
-        kernelh: 5
-        iterations: 1
+    # - 'protoseg.filters.morphological.erosion':
+    #     kernelw: 5
+    #     kernelh: 5
+    #     iterations: 1
 #    - 'protoseg.filters.morphological.dilation': [5,5,2]
 #    - 'protoseg.filters.morphological.opening': [5,5,1]
+    - 'protoseg.filters.torch_cade.torch_cade':
+        num_angles: 12
+        distance: 4
+        epochs: 2
+        background_min: 0
+        background_max: 255
+        learn_rate: 1
+        reinit: True
   metrices:
     - 'pixel_accuracy': 'protoseg.metrices.accuracy.pixel_accuracy'
     - 'mean_accuracy': 'protoseg.metrices.accuracy.mean_accuracy'

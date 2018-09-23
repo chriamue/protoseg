@@ -5,7 +5,7 @@ from importlib import import_module
 import numpy as np
 import cv2
 from . import backends
-
+from tqdm import tqdm
 
 class DataLoader():
 
@@ -25,12 +25,22 @@ class DataLoader():
 
         self.images = (os.path.join(_image_dir, f)
                        for f in os.listdir(_image_dir) if "mask" not in f)
+        self.images = sorted(self.images)
+
         if mode != 'test':
             self.masks = (os.path.join(_masks_dir, f)
                           for f in os.listdir(_masks_dir))
+            self.masks = sorted(self.masks)
+            if config['ignore_unlabeled'] is True:
+                i = 0
+                for _ in tqdm(range(len(self.masks))):
+                    mask = cv2.imread(self.masks[i], cv2.IMREAD_GRAYSCALE)
+                    if np.sum(mask) == 0:
+                        del self.images[i]
+                        del self.masks[i]
+                    else:
+                        i += 1
 
-        self.images = sorted(self.images)
-        self.masks = sorted(self.masks)
         if mode != 'test':
             assert (len(self.images) == len(self.masks))
 
