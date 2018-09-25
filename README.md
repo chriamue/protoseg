@@ -4,9 +4,21 @@ Prototyped Segmentation
 
 ## Install
 
-The following package must be installed
+### Virtual environment
+
+```bash
+virtualenv -p python3 venv
+source venv/bin/activate
+pip install -r requirements.txt
+python3 train.py configs/all.yml
+```
+
+### Pip
+
+The following package should be installed
 
 * pip install git+https://github.com/chriamue/pytorch-semseg
+* pip install gluoncv,mxboard, tensorboardx
 
 then protoseg can be installed
 
