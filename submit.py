@@ -53,16 +53,17 @@ if __name__ == "__main__":
 
         # get config for current run
         config = configs.get()
+
+        backends.set_backend(config['backend'])
         # summary
         summarywriter = backends.backend().get_summary_writer(logdir=resultpath)
         # Load Model
         modelfile = os.path.join('results/', run, 'model.checkpoint')
         model = Model(config, modelfile)
         # dataloader
-        dataloader = DataLoader(datapath, config=config, mode='test')
-        backends.set_backend(config['backend'])
+        dataloader = DataLoader(config=config, mode='test')
         # predictor
-        predictor = Predictor(model=model)
+        predictor = Predictor(model=model, config=config)
 
         with open(submissionfile, 'a') as f:
             f.write('img,pixels\n')
