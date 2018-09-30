@@ -129,7 +129,7 @@ class ptsemseg_backend(AbstractBackend):
             trainer.dataloader, batch_size=batch_size, num_workers=min(batch_size, 8), shuffle=True
         )
 
-        for (images, labels) in dataloader:
+        for (images, labels) in tqdm(dataloader):
             trainer.global_step += 1
             trainer.model.model.train()
             if self.dummy_input is None:
