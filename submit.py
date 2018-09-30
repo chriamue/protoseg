@@ -63,7 +63,7 @@ if __name__ == "__main__":
         # dataloader
         dataloader = DataLoader(config=config, mode='test')
         # predictor
-        predictor = Predictor(model=model, config=config)
+        predictor = Predictor(model=model, config=config, backend=backends.backend())
 
         with open(submissionfile, 'a') as f:
             f.write('img,pixels\n')

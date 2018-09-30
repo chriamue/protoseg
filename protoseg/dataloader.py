@@ -119,20 +119,26 @@ class DataLoader():
     def __len__(self):
         return len(self.images)
 
-    def generator(self):
+    def generator(self, shuffle=False):
+        indices = np.arange(len(self))
+        if shuffle == True:
+            np.random.shuffle(indices)
         index = 0
         while index < len(self):
-            img, mask = self[index]
+            img, mask = self[indices[index]]
             yield img, mask
             index += 1
 
-    def batch_generator(self, batch_size=1):
+    def batch_generator(self, batch_size=1, shuffle=False):
+        indices = np.arange(len(self))
+        if shuffle == True:
+            np.random.shuffle(indices)
         index = 0
         while index + batch_size <= len(self):
             img_batch = []
             mask_batch = []
             for i in range(batch_size):
-                img, mask = self[index + i]
+                img, mask = self[indices[index + i]]
                 img_batch.append(img)
                 mask_batch.append(mask)
             yield img_batch, mask_batch
