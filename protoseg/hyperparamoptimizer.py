@@ -10,7 +10,7 @@ class HyperParamOptimizer():
                                     np.log(0.2)),
         'batch_size': hp.choice('batch_size', list(range(1, 3)))
     }
-    epochs = 2
+    epochs = 1
     trial = 0
 
     def __init__(self, trainer):

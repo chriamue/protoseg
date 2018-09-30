@@ -126,7 +126,7 @@ class ptsemseg_backend(AbstractBackend):
         epoch_loss = 0
 
         dataloader = data.DataLoader(
-            trainer.dataloader, batch_size=batch_size, num_workers=min(batch_size, 8), shuffle=True
+            trainer.dataloader, batch_size=batch_size, num_workers=1, pin_memory=True, shuffle=True
         )
 
         for (images, labels) in tqdm(dataloader):
