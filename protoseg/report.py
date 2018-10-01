@@ -16,6 +16,7 @@ sns.set(style="darkgrid")
 sns.set_context("paper")
 from matplotlib.backends.backend_pdf import PdfPages
 
+
 class Report():
 
     def __init__(self, configs, resultspath='results/'):
@@ -25,21 +26,13 @@ class Report():
 
     # source: https://github.com/JamesChuanggg/Tensorboard2Seaborn/blob/master/beautify.py
     def plot(self, acc, tag='loss', smooth_space=100, color_code='#4169E1'):
-        ''' beautify tf log
-            Use better library (seaborn) to plot tf event file'''
-
-        # only support scalar now
-        scalar_list = acc.Tags()['scalars']
-
         x_list = []
         y_list = []
         x_list_raw = []
         y_list_raw = []
-        for tag_ in scalar_list:
-            if tag_ != tag:
-                continue
-            x = [int(s.step) for s in acc.Scalars(tag)]
-            y = [s.value for s in acc.Scalars(tag)]
+        try:
+            x = [int(s.step) for s in acc.Scalars(tag=tag)]
+            y = [s.value for s in acc.Scalars(tag=tag)]
 
             # smooth curve
             x_ = []
@@ -55,31 +48,33 @@ class Report():
             # raw curve
             x_list_raw = x
             y_list_raw = y
+        except Exception as e:
+            print(e)
 
         fig, ax = plt.subplots()
         plt.title(tag)
         plt.plot(x_list_raw, y_list_raw,
-                     color=colors.to_rgba(color_code, alpha=0.4))
+                 color=colors.to_rgba(color_code, alpha=0.4))
         plt.plot(x_list, y_list, color=color_code, linewidth=1.5)
         fig.canvas.draw()
         return fig, np.array(fig.canvas.renderer._renderer)
 
     def image(self, acc, tag='loss'):
-        image_list = acc.Images(tag = tag)
+        image_list = acc.Images(tag=tag)
         with tf.Session() as sess:
             img = tf.image.decode_image(image_list[-1].encoded_image_string)
             npimg = img.eval(session=sess)
         return npimg
 
-
     def generate(self):
-        pp = PdfPages(os.path.join(self.resultspath, os.path.basename(self.configs.filename) + '.pdf'))
+        pp = PdfPages(os.path.join(self.resultspath,
+                                   os.path.basename(self.configs.filename) + '.pdf'))
         for run in self.configs:
             resultpath = os.path.join(self.resultspath, run)
             event_acc = ea.EventAccumulator(resultpath)
             event_acc.Reload()
             fig, img = self.plot(event_acc, tag="loss")
-            plt.text(0.05,0.95,run, transform=fig.transFigure, size=24)
+            plt.text(0.05, 0.95, run, transform=fig.transFigure, size=24)
             pp.savefig(fig)
             cv2.imwrite(resultpath+'/loss.png', img)
             config = self.configs.get()
@@ -98,30 +93,45 @@ class Report():
         pp = PdfPages(os.path.join(resultpath, 'paramopt.pdf'))
         event_acc = ea.EventAccumulator(resultpath)
         event_acc.Reload()
-        
+
         for result in hyperparamoptimizer.trials.results:
             trial = result['trial']
+            l = result['loss']
             _, loss = self.plot(event_acc, tag='trial'+str(trial)+'_loss')
-            val_image = self.image(event_acc, tag='trial'+str(trial)+'_val_image')
-            val_mask = self.image(event_acc, tag='trial'+str(trial)+'_val_mask')
-            val_predicted = self.image(event_acc, tag='trial'+str(trial)+'_val_predicted')
-            fig=plt.figure()
+            val_image = self.image(
+                event_acc, tag='trial'+str(trial)+'_val_image')
+            val_mask = self.image(
+                event_acc, tag='trial'+str(trial)+'_val_mask')
+            val_predicted = self.image(
+                event_acc, tag='trial'+str(trial)+'_val_predicted')
+            fig = plt.figure()
+
             fig.add_subplot(2, 4, 1)
+            plt.axis('on')
             plt.imshow(loss)
+
             fig.add_subplot(2, 4, 2)
+            plt.axis('off')
             plt.imshow(val_image)
+
             fig.add_subplot(2, 4, 3)
+            plt.axis('off')
             plt.imshow(val_mask)
+
             fig.add_subplot(2, 4, 4)
+            plt.axis('off')
             plt.imshow(val_predicted)
-            plt.text(0.05,0.95, 'trial ' + str(trial), transform=fig.transFigure, size=24)
+
+            plt.text(0.05, 0.95, 'trial ' + str(trial) + " loss: " +
+                     str(l), transform=fig.transFigure, size=24)
             for i, m in enumerate(config['metrices']):
                 name = list(m.keys())[0]
-                _, metric = self.plot(event_acc, tag='trial'+str(trial)+'_'+name)
-                fig.add_subplot(2, len(config['metrices']), len(config['metrices']) + i+1)
+                tag = 'trial'+str(trial)+'_'+name
+                _, metric = self.plot(event_acc, tag=tag)
+                fig.add_subplot(2, len(config['metrices']), len(
+                    config['metrices']) + i+1)
                 plt.imshow(metric)
             pp.attach_note(result['params'])
             pp.savefig(fig)
+            plt.close(fig)
         pp.close()
-
-
