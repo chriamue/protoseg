@@ -1,7 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
+import argparse
 import os
 import sys
+import cv2
+import numpy as np
 
 from protoseg import Augmentation
 from protoseg import Config
@@ -13,15 +16,14 @@ from protoseg import backends
 
 resultspath = 'results/'
 
-def help():
-    return "Config file parameter missing. Run like: python train.py /path/to/config.yml"
+def main():
+    parser = argparse.ArgumentParser(add_help=True)
+    parser.add_argument('--config', help="Path to config file.")
+    
+    args, _ = parser.parse_known_args()
 
-
-if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print(help())
-        sys.exit(1)
-    configs = Config(sys.argv[1])    
+    configfile = args.config or {'run1':{}}
+    configs = Config(configfile)
     for run in configs:
         print("Run: ", run)
         resultpath = os.path.join(resultspath, run)
@@ -48,5 +50,8 @@ if __name__ == "__main__":
     
     report = Report(configs, resultspath)
     report.generate()
-    
     sys.exit(0)
+
+
+if __name__ == '__main__':
+    main()

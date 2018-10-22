@@ -37,5 +37,6 @@ setuptools.setup(name='protoseg',
                  ), entry_points='''
                     [console_scripts]
                     protoseg-submit=protoseg.cli.submit:main
+                    protoseg-train=protoseg.cli.train:main
                     ''',
                  )

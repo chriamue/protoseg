@@ -70,7 +70,7 @@ def masks_as_image(in_mask_list):
 
 
 def generate_masks(kaggledatapath, datapath):
-    train_masks_archive_file = "{}.csv".format("train_ship_segmentations")
+    train_masks_archive_file = "{}.csv".format("train_ship_segmentations_v2")
     train_masks_archive_path = os.path.join(
         kaggledatapath, train_masks_archive_file)
     train_masks_path = os.path.join(datapath, "train_masks/")
