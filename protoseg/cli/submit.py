@@ -1,5 +1,6 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
+import argparse
 import os
 import sys
 import cv2
@@ -32,16 +33,14 @@ def run_length_enc(label):
     res = list(chain.from_iterable(res))
     return res  # ' '.join([str(r) for r in res])
 
+def main():
+    parser = argparse.ArgumentParser(add_help=True)
+    parser.add_argument('--config', help="Path to config file.")
+    
+    args, _ = parser.parse_known_args()
 
-def help():
-    return "Config file parameter missing. Run like: python submit.py /path/to/config.yml"
-
-
-if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print(help())
-        sys.exit(1)
-    configs = Config(sys.argv[1])
+    configfile = args.config or {'run1':{}}
+    configs = Config(configfile)
     for run in configs:
         print("create submission for: ", run)
         resultpath = os.path.join(resultspath, run)
@@ -55,8 +54,6 @@ if __name__ == "__main__":
         config = configs.get()
 
         backends.set_backend(config['backend'])
-        # summary
-        summarywriter = backends.backend().get_summary_writer(logdir=resultpath)
         # Load Model
         modelfile = os.path.join('results/', run, 'model.checkpoint')
         model = Model(config, modelfile)
@@ -82,3 +79,7 @@ if __name__ == "__main__":
                 f.write('{},{}\n'.format(os.path.basename(
                     filename).split(".")[0], ' '.join(map(str, enc))))
     sys.exit(0)
+
+
+if __name__ == '__main__':
+    main()

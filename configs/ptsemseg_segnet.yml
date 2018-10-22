@@ -1,5 +1,5 @@
 ptsemseg_segnet:
-  datapath: ~/.kaggle/competitions/ultrasound-nerve-segmentation/smalldataset
+  #datapath: ~/.kaggle/competitions/ultrasound-nerve-segmentation #/smalldataset
   backend: ptsemseg_backend
   backbone: segnet
   classes: 2

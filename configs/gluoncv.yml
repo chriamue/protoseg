@@ -9,6 +9,8 @@ run1_gluoncv:
   loss_function: SoftmaxCrossEntropyLossWithAux
   learn_rate: 0.001
   pretrained: True
+  #normalize: {}
+    #
   width: 480
   height: 480
   orig_width: 580
