@@ -25,8 +25,7 @@ class gluoncv_backend(AbstractBackend):
         AbstractBackend.__init__(self)
 
     def load_model(self, config, modelfile):
-        model = gluoncv.model_zoo.get_fcn(
-            dataset='pascal_voc', backbone=config['backbone'], pretrained=config['pretrained'], ctx=self.ctx_list)
+        model = gluoncv.model_zoo.get_model(config['backbone'], pretrained=config['pretrained'], ctx=self.ctx_list)
         model.hybridize()
         if os.path.isfile(modelfile):
             print('loaded model from:', modelfile)
