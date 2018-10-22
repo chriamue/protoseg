@@ -2,6 +2,7 @@ from __future__ import absolute_import
 import os
 import numpy as np
 import cv2
+from tqdm import tqdm
 import mxnet
 from mxnet import nd
 from mxnet import gluon, autograd
@@ -79,9 +80,11 @@ class gluoncv_backend(AbstractBackend):
         dataloader = DataLoader(
             dataset=trainer.dataloader, batch_size=batch_size, last_batch='rollover', num_workers=batch_size)
 
-        for i, (X_batch, y_batch) in enumerate(dataloader):
+        for i, (X_batch, y_batch) in tqdm(enumerate(dataloader)):
             trainer.global_step += 1
             trainer.lr_scheduler.update(i, trainer.epoch)
+            X_batch = X_batch.as_in_context(self.ctx)
+            y_batch = y_batch.as_in_context(self.ctx)
             with autograd.record(True):
                 outputs = trainer.model.model(X_batch)
                 losses = trainer.loss_function(outputs, y_batch)

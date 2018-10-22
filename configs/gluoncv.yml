@@ -1,12 +1,12 @@
 run1_gluoncv:
   backend: gluoncv_backend
-  backbone: resnet50
+  backbone: fcn_resnet50_ade
   datapath: ~/.kaggle/competitions/ultrasound-nerve-segmentation/smalldataset
   ignore_unlabeled: True
   epochs: 10
   batch_size: 1
   optimizer: adam
-  loss_function: SoftmaxCrossEntropyLossWithAux
+  loss_function: MixSoftmaxCrossEntropyLoss
   learn_rate: 0.001
   pretrained: True
   #normalize: {}
@@ -45,14 +45,7 @@ run1_gluoncv:
     #     iterations: 1
 #    - 'protoseg.filters.morphological.dilation': [5,5,2]
 #    - 'protoseg.filters.morphological.opening': [5,5,1]
-    - 'protoseg.filters.torch_cade.torch_cade':
-        num_angles: 12
-        distance: 4
-        epochs: 2
-        background_min: 0
-        background_max: 255
-        learn_rate: 1
-        reinit: True
+
   metrices:
     - 'pixel_accuracy': 'protoseg.metrices.accuracy.pixel_accuracy'
     - 'mean_accuracy': 'protoseg.metrices.accuracy.mean_accuracy'
