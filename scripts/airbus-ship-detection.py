@@ -12,11 +12,11 @@ import cv2
 def unzip(kaggledatapath, datapath):
     data_folder = datapath
     competition_path = kaggledatapath
-    train_archive_file = "{}.zip".format("train")
+    train_archive_file = "{}.zip".format("train_v2")
     train_archive_path = os.path.join(competition_path, train_archive_file)
-    test_archive_file = "{}.zip".format("test")
+    test_archive_file = "{}.zip".format("test_v2")
     test_archive_path = os.path.join(competition_path, test_archive_file)
-    train_masks_archive_file = "{}.zip".format("train_ship_segmentations.csv")
+    train_masks_archive_file = "{}.zip".format("train_ship_segmentations_v2.csv")
     train_masks_archive_path = os.path.join(
         competition_path, train_masks_archive_file)
 
@@ -28,7 +28,7 @@ def unzip(kaggledatapath, datapath):
         zip_ref.extractall(train_path)
         zip_ref.close()
         print('Train Data extracted.')
-    if not os.path.exists(os.path.join(competition_path, "train_ship_segmentations.csv")):
+    if not os.path.exists(os.path.join(competition_path, "train_ship_segmentations_v2.csv")):
         zip_ref = zipfile.ZipFile(train_masks_archive_path, 'r')
         zip_ref.extractall(data_folder)
         zip_ref.close()
