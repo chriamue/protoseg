@@ -7,7 +7,7 @@ from mxnet import nd
 from mxnet import gluon, autograd
 from mxnet.gluon.data import DataLoader
 import gluoncv
-from gluoncv.model_zoo.segbase import SoftmaxCrossEntropyLossWithAux
+from gluoncv.loss import MixSoftmaxCrossEntropyLoss
 from gluoncv.utils.parallel import DataParallelModel, DataParallelCriterion
 from gluoncv.data import batchify
 
@@ -39,7 +39,7 @@ class gluoncv_backend(AbstractBackend):
 
     def init_trainer(self, trainer):
         if trainer.config['loss_function'] == 'default':
-            trainer.loss_function = SoftmaxCrossEntropyLossWithAux(aux=True)
+            trainer.loss_function = MixSoftmaxCrossEntropyLoss(aux=True)
         else:
             trainer.loss_function = getattr(gluoncv.loss, trainer.config['loss_function'])(
                 **trainer.config['loss_function_parameters'])
