@@ -80,7 +80,7 @@ class gluoncv_backend(AbstractBackend):
         dataloader = DataLoader(
             dataset=trainer.dataloader, batch_size=batch_size, last_batch='rollover', num_workers=batch_size)
 
-        for i, (X_batch, y_batch) in tqdm(enumerate(dataloader)):
+        for i, (X_batch, y_batch) in tqdm(enumerate(dataloader), total=len(trainer.dataloader)/batch_size):
             trainer.global_step += 1
             trainer.lr_scheduler.update(i, trainer.epoch)
             X_batch = X_batch.as_in_context(self.ctx)
@@ -94,7 +94,7 @@ class gluoncv_backend(AbstractBackend):
             for loss in losses:
                 trainer.loss += loss.asnumpy()[0]
             if i % summarysteps == 0:
-                print(trainer.global_step, i, 'loss:', losses[0].asnumpy()[0])
+                tqdm.write("{}/{}, loss: {}".format(i, trainer.global_step, losses[0].asnumpy()[0]))
                 if trainer.summarywriter:
                     trainer.summarywriter.add_scalar(
                         tag=trainer.name+'loss', value=losses[0].asnumpy()[0], global_step=trainer.global_step)

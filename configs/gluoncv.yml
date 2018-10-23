@@ -7,7 +7,7 @@ run1_gluoncv:
   batch_size: 1
   optimizer: adam
   loss_function: MixSoftmaxCrossEntropyLoss
-  learn_rate: 0.001
+  learn_rate: 0.01
   pretrained: True
   #normalize: {}
     #
@@ -15,7 +15,7 @@ run1_gluoncv:
   height: 480
   orig_width: 580
   orig_height: 420
-  summarysteps: 1
+  summarysteps: 10
   color_img: True
   gray_mask: True
 #   shape_augmentation:
